@@ -3,19 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>RMT — 管楽器奏者のための呼吸筋トレーニング</title>
+<title>RMT — 呼吸筋トレーニング</title>
 <meta name="description" content="管楽器奏者のための呼吸筋トレーニング(RMT)。BPMに合わせて4ステップを5分で。継続日数を記録します。">
 <meta name="theme-color" content="#0C0F14">
+<link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RMT">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath fill='%23D9A83C' d='M24 1.5c4.6 8.4 8.6 11.9 11.6 16.9 3.4 5.7 5.4 11 5.4 15.9C41 45.7 33.4 54.5 24 54.5S7 45.7 7 34.3c0-5.4 1.9-9.6 4.5-13.2 1.2 3.1 3.1 4.7 5 5.2C15.2 19.6 18 10 24 1.5z'/%3E%3C/svg%3E">
+<meta name="application-name" content="RMT">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@600;700&display=swap" rel="stylesheet">
 <style>
-
-   
 /* ============================================================
    RMT — Breath Trainer
    palette : 夜の練習室 / ラッカー真鍮
@@ -1433,12 +1435,35 @@ function fadeTo(target, ms){
 }
 function bgmPlay(){                     // ユーザー操作きっかけでのみ呼ぶ
   if(!bgmOk || !bgmOn) return;
+  if(document.visibilityState!=="visible") return;   // 非表示中は鳴らさない
   const p = bgm.play();
   if(p && p.catch) p.catch(()=>{});     // 自動再生がブロックされても無視
   fadeTo(BGM_VOL, 1600);
 }
+function bgmStop(){ clearInterval(fadeTimer); bgm.pause(); bgm.volume=0; }
 function bgmDuck(){ if(bgmOk && !bgm.paused) fadeTo(0, 900); }           // トレーニング中は消す
 function bgmResume(){ if(entered && bgmOn && bgmOk) bgmPlay(); }
+
+/* タブを閉じる・他アプリに移る・画面をロックしたら必ず止める
+   （メディア要素は既定でバックグラウンド再生され続けるため） */
+let bgmWasPlaying=false;
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="hidden"){
+    bgmWasPlaying = !bgm.paused;
+    bgmStop();
+  }else if(bgmWasPlaying){
+    bgmWasPlaying=false;
+    if(!S.running) bgmResume();          // トレーニング中は無音のまま戻す
+  }
+});
+function haltAll(){
+  bgmStop();
+  try{ clearInterval(S.sched); }catch(e){}
+  try{ if(ac) ac.suspend(); }catch(e){}
+  try{ releaseAwake(); }catch(e){}
+}
+window.addEventListener("pagehide", haltAll);
+window.addEventListener("beforeunload", haltAll);
 function paintBgmBtn(){
   bgmBtn.hidden = !bgmOk;
   bgmBtn.title = bgmOn ? "BGM ON — "+BGM_TITLE : "BGM OFF";
