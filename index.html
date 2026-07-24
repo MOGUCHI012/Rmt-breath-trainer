@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RMT — 管楽器奏者のための呼吸筋トレーニング</title>
+<meta name="description" content="管楽器奏者のための呼吸筋トレーニング(RMT)。BPMに合わせて4ステップを5分で。継続日数を記録します。">
+<meta name="theme-color" content="#0C0F14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RMT">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 56'%3E%3Cpath fill='%23D9A83C' d='M24 1.5c4.6 8.4 8.6 11.9 11.6 16.9 3.4 5.7 5.4 11 5.4 15.9C41 45.7 33.4 54.5 24 54.5S7 45.7 7 34.3c0-5.4 1.9-9.6 4.5-13.2 1.2 3.1 3.1 4.7 5 5.2C15.2 19.6 18 10 24 1.5z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Old+Mincho:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RMT — Breath Trainer
+   palette : 夜の練習室 / ラッカー真鍮
+   type    : Zen Old Mincho (display) / Zen Kaku Gothic New (body)
+             IBM Plex Mono (data)
+   ============================================================ */
+:root{
+  --ink:      #0C0F14;
+  --ink-2:    #141922;
+  --ink-3:    #1B2230;
+  --line:     rgba(237,231,218,.10);
+  --line-2:   rgba(237,231,218,.18);
+  --paper:    #EDE7DA;
+  --paper-d:  rgba(237,231,218,.56);
+  --paper-dd: rgba(237,231,218,.34);
+  --brass:    #D9A83C;
+  --brass-hi: #F5DE9B;
+  --brass-d:  #8A6C24;
+  --air:      #7FD1E8;
+  --air-d:    #35707F;
+  --ember:    #FF6F53;
+  --radius:   14px;
+  --accent:   var(--brass);
+  --accent-d: var(--brass-d);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN",sans-serif;
+  font-size:15px;line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(70% 45% at 50% -8%, rgba(217,168,60,.16), transparent 70%),
+    radial-gradient(50% 40% at 12% 105%, rgba(127,209,232,.10), transparent 70%);
+}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:6px}
+
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--paper-dd);
+}
+
+/* ---------- shell ---------- */
+.wrap{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:0 20px 64px}
+
+/* ---------- header ---------- */
+.top{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:22px 0 18px;position:sticky;top:0;z-index:20;
+  background:linear-gradient(var(--ink) 62%,rgba(12,15,20,0));
+}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0}
+.brand .mark{
+  font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:15px;
+  letter-spacing:.18em;color:var(--brass);
+}
+.brand .jp{font-size:12px;color:var(--paper-dd);letter-spacing:.06em;white-space:nowrap}
+.top-actions{display:flex;align-items:center;gap:8px;flex:none}
+.icon-btn{
+  width:34px;height:34px;border-radius:50%;border:1px solid var(--line-2);
+  display:grid;place-items:center;font-family:"IBM Plex Mono",monospace;font-size:13px;
+  color:var(--paper-d);transition:.2s;
+}
+.icon-btn:hover{color:var(--paper);border-color:var(--brass);background:rgba(217,168,60,.08)}
+
+/* ---------- streak flame ---------- */
+.streak{position:relative;width:40px;height:46px;display:block;transition:.3s}
+.streak svg{width:100%;height:100%;display:block;position:relative;z-index:1;filter:drop-shadow(0 0 10px rgba(255,140,40,.35))}
+.streak .num{
+  position:absolute;left:0;right:0;top:56%;transform:translateY(-50%);z-index:2;
+  text-align:center;font-family:"IBM Plex Mono",monospace;font-weight:600;
+  font-size:15px;color:#2A1405;letter-spacing:-.02em;
+}
+.streak.cold{filter:grayscale(.85);opacity:.45}
+.streak.cold .num{color:#0C0F14}
+.streak:hover{transform:translateY(-2px)}
+@keyframes flicker{0%,100%{opacity:.9;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.04)}}
+.streak:not(.cold) svg{animation:flicker 2.6s ease-in-out infinite;transform-origin:50% 100%}
+
+/* ---------- super streak（1日2回） ---------- */
+.streak .spark{display:none}
+.streak.super svg path:nth-of-type(1){fill:url(#bf1)}
+.streak.super svg path:nth-of-type(2){fill:url(#bf2)}
+.streak.super svg{filter:drop-shadow(0 0 12px rgba(80,200,255,.85)) drop-shadow(0 0 26px rgba(40,120,255,.5))}
+.streak.super .num{color:#062032}
+.streak.super::before{
+  content:"";position:absolute;inset:-10px;border-radius:50%;z-index:0;
+  background:radial-gradient(circle,rgba(90,200,255,.42),rgba(60,140,255,.12) 55%,transparent 72%);
+  animation:aura 2.6s ease-in-out infinite;
+}
+@keyframes aura{0%,100%{transform:scale(.86);opacity:.5}50%{transform:scale(1.18);opacity:1}}
+.streak.super .spark{
+  display:block;position:absolute;left:50%;bottom:6px;width:3px;height:3px;border-radius:50%;
+  background:#E6FBFF;box-shadow:0 0 7px #63D8FF,0 0 14px rgba(60,150,255,.7);
+  opacity:0;animation:spark 2.4s linear infinite;animation-delay:var(--d);pointer-events:none;
+}
+@keyframes spark{
+  0%  {transform:translate(var(--x),4px) scale(.5);opacity:0}
+  15% {opacity:1}
+  70% {opacity:.85}
+  100%{transform:translate(calc(var(--x) * 1.7),-38px) scale(.15);opacity:0}
+}
+.super-badge{
+  font-size:11px;letter-spacing:.28em;color:#8FE3FF;margin-top:6px;
+  text-shadow:0 0 14px rgba(80,200,255,.8);animation:badge 2.2s ease-in-out infinite;
+}
+@keyframes badge{0%,100%{opacity:.72}50%{opacity:1}}
+.done .big-flame.super .spark{
+  width:5px;height:5px;bottom:14px;animation-duration:2.8s;
+  box-shadow:0 0 10px #63D8FF,0 0 22px rgba(60,150,255,.8);
+}
+.done .big-flame.super::before{inset:-24px}
+@keyframes spark-l{0%{transform:translate(var(--x),10px) scale(.5);opacity:0}
+  15%{opacity:1}100%{transform:translate(calc(var(--x) * 1.6),-96px) scale(.15);opacity:0}}
+.done .big-flame.super .spark{animation-name:spark-l}
+
+/* ---------- hero ---------- */
+.hero{
+  border:1px solid var(--line);border-radius:var(--radius);
+  background:linear-gradient(160deg,rgba(255,255,255,.045),rgba(255,255,255,.012));
+  padding:22px 20px;
+}
+.hero h1{
+  font-family:"Zen Old Mincho",serif;font-weight:700;
+  font-size:30px;line-height:1.28;letter-spacing:.02em;margin:10px 0 8px;
+}
+.hero h1 em{font-style:normal;color:var(--brass)}
+.hero p.lead{font-size:13px;color:var(--paper-d);margin-bottom:18px}
+
+/* ---------- breath score (signature) ---------- */
+.score{
+  position:relative;display:flex;gap:2px;height:44px;align-items:flex-end;
+  padding:6px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.score.mini{height:22px;padding:3px 0;border:none;gap:1.5px}
+.blk{border-radius:2px;min-width:1px}
+.blk[data-c="air"]  {background:linear-gradient(180deg,var(--air),var(--air-d));height:100%}
+.blk[data-c="brass"]{background:linear-gradient(180deg,var(--brass),var(--brass-d));height:72%}
+.blk[data-c="ember"]{background:var(--ember);height:88%}
+.blk[data-c="mute"] {background:rgba(237,231,218,.13);height:34%}
+.playhead{
+  position:absolute;top:0;bottom:0;width:2px;left:0;
+  background:var(--paper);box-shadow:0 0 12px rgba(237,231,218,.8);
+  transition:left .08s linear;pointer-events:none;
+}
+.legend{display:flex;gap:16px;margin-top:10px;font-size:11px;color:var(--paper-dd)}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.hero-meta{
+  display:flex;align-items:baseline;gap:8px;margin-top:14px;
+  font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--paper-dd);
+}
+.hero-meta .lbl{
+  font-family:"Zen Kaku Gothic New",sans-serif;font-size:11px;letter-spacing:.08em;
+  color:var(--paper-dd);border:1px solid var(--line);border-radius:4px;padding:2px 7px;
+  align-self:center;
+}
+.hero-meta strong{font-size:22px;font-weight:500;color:var(--paper)}
+
+/* ---------- CTA ---------- */
+.cta{
+  width:100%;margin-top:16px;padding:16px;border-radius:11px;
+  background:linear-gradient(100deg,var(--brass),#B98A22);color:#1A1206;
+  font-weight:700;font-size:16px;letter-spacing:.04em;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  transition:transform .15s,box-shadow .25s;box-shadow:0 8px 26px -12px rgba(217,168,60,.9);
+}
+.cta span{font-family:"IBM Plex Mono",monospace;font-size:11px;opacity:.72;letter-spacing:.1em}
+.cta:hover{transform:translateY(-2px);box-shadow:0 14px 34px -12px rgba(217,168,60,.95)}
+.cta:active{transform:translateY(0)}
+
+/* ---------- tempo ---------- */
+.tempo{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.tempo-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:12px}
+.bpm-read{display:flex;align-items:baseline;gap:6px}
+.bpm-read b{font-family:"IBM Plex Mono",monospace;font-size:34px;font-weight:500;line-height:1}
+.bpm-read s{text-decoration:none;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--paper-dd);letter-spacing:.14em}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;width:100%;height:2px;
+  background:var(--line-2);border-radius:2px;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:var(--paper);border:4px solid var(--brass);cursor:grab;
+}
+input[type=range]::-moz-range-thumb{
+  width:16px;height:16px;border-radius:50%;background:var(--paper);
+  border:4px solid var(--brass);cursor:grab;
+}
+.presets{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.chip{
+  padding:5px 12px;border:1px solid var(--line-2);border-radius:20px;
+  font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--paper-d);transition:.18s;
+}
+.chip:hover{border-color:var(--brass);color:var(--paper)}
+.chip.on{background:var(--brass);border-color:var(--brass);color:#1A1206}
+.tempo .hint{margin-top:12px;font-size:11.5px;color:var(--paper-dd);line-height:1.6}
+
+/* ---------- step list ---------- */
+.sec-head{display:flex;align-items:center;gap:12px;margin:32px 0 12px}
+.sec-head .rule{flex:1;height:1px;background:var(--line)}
+.step{
+  border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px;margin-bottom:10px;
+  transition:border-color .2s,background .2s;
+}
+.step:hover{border-color:var(--line-2);background:rgba(255,255,255,.018)}
+.step-top{display:flex;align-items:center;gap:12px}
+.step-num{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  color:var(--brass);padding-top:2px;flex:none;
+}
+.step-name{flex:1;min-width:0}
+.step-name h3{font-family:"Zen Old Mincho",serif;font-size:17px;font-weight:600;letter-spacing:.02em}
+.step-name p{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--paper-dd);
+  letter-spacing:.06em;margin-top:2px;
+}
+.step-act{display:flex;gap:7px;flex:none}
+.ghost{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--line-2);
+  display:grid;place-items:center;color:var(--paper-d);font-size:13px;transition:.18s;
+}
+.ghost:hover{border-color:var(--brass);color:var(--brass)}
+.play{
+  height:32px;padding:0 14px;border-radius:8px;border:1px solid var(--brass);
+  color:var(--brass);font-size:12.5px;font-weight:700;transition:.18s;
+}
+.play:hover{background:var(--brass);color:#1A1206}
+.step-meta{
+  display:flex;justify-content:space-between;gap:10px;margin-top:10px;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--paper-dd);
+}
+
+/* ---------- foot ---------- */
+.foot{margin-top:34px;font-size:11px;line-height:1.8;color:var(--paper-dd);text-align:center}
+
+/* ============ brief (開始前の説明) ============ */
+.brief{
+  position:fixed;inset:0;z-index:65;background:var(--ink);overflow-y:auto;
+  padding:max(18px,env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom));
+}
+.brief[hidden]{display:none}
+.brief::before{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(60% 40% at 50% 0%,rgba(217,168,60,.13),transparent 70%);
+}
+.brief-in{position:relative;max-width:560px;margin:0 auto;animation:rise .3s cubic-bezier(.2,.8,.25,1)}
+.brief-head{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.brief h2{
+  font-family:"Zen Old Mincho",serif;font-size:26px;font-weight:700;
+  line-height:1.4;letter-spacing:.03em;margin-bottom:8px;
+}
+.brief-lead{font-size:13px;color:var(--paper-d);line-height:1.8}
+
+.brief-rules{margin:26px 0 30px;border-top:1px solid var(--line)}
+.rule-row{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line)}
+.rule-row p{font-size:13px;color:var(--paper-d);line-height:1.8}
+.rule-row b{color:var(--paper);font-weight:700}
+.rule-ico{flex:none;width:26px;height:26px;border-radius:50%;position:relative;margin-top:3px;
+  border:1px solid var(--line-2)}
+.rule-ico[data-i="circle"]::after{
+  content:"";position:absolute;inset:7px;border-radius:50%;background:var(--air);
+  animation:breathe 3.4s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{transform:scale(.55)}50%{transform:scale(1.25)}}
+.rule-ico[data-i="beat"]::after{
+  content:"";position:absolute;left:50%;top:5px;bottom:5px;width:2px;margin-left:-1px;
+  background:var(--brass);
+}
+.rule-ico[data-i="beat"]::before{
+  content:"";position:absolute;left:6px;right:6px;top:50%;height:2px;margin-top:-1px;
+  background:var(--brass-d);
+}
+.rule-ico[data-i="stop"]::after{
+  content:"";position:absolute;inset:8px;border-radius:2px;background:var(--ember);
+}
+
+.brief-sec{margin-bottom:28px}
+.brief-sec .eyebrow{margin-bottom:10px}
+.bstep{display:flex;gap:14px;padding:14px 0;border-top:1px solid var(--line)}
+.bstep:last-child{border-bottom:1px solid var(--line)}
+.bstep .bn{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--brass);flex:none;padding-top:3px;letter-spacing:.1em}
+.bstep h4{font-family:"Zen Old Mincho",serif;font-size:16px;font-weight:600;letter-spacing:.02em}
+.bstep .how{font-size:12.5px;color:var(--paper-d);line-height:1.8;margin-top:5px}
+.bstep .how .tag{
+  display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.1em;
+  border:1px solid var(--line-2);border-radius:4px;padding:1px 5px;margin-right:8px;
+  color:var(--paper-dd);vertical-align:1px;
+}
+.bstep .how .tag.act{border-color:var(--brass-d);color:var(--brass)}
+.bstep .how.why{color:var(--paper-dd);font-size:12px;border-top:1px dashed var(--line);padding-top:8px;margin-top:9px}
+.bstep .pat{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--paper-dd);
+  margin-top:6px;letter-spacing:.04em;
+}
+
+.brief-meta{display:flex;gap:10px;margin-bottom:16px}
+.brief-meta span{
+  flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 4px;text-align:center;
+}
+.brief-meta b{display:block;font-size:19px;font-weight:500}
+.brief-meta s{text-decoration:none;font-size:10px;color:var(--paper-dd);letter-spacing:.08em}
+
+.check{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--paper-d);cursor:pointer;padding:6px 0}
+.check input{
+  appearance:none;-webkit-appearance:none;width:19px;height:19px;flex:none;
+  border:1px solid var(--line-2);border-radius:5px;background:transparent;
+  display:grid;place-items:center;cursor:pointer;transition:.15s;
+}
+.check input:checked{background:var(--brass);border-color:var(--brass)}
+.check input:checked::after{content:"";width:5px;height:9px;border:2px solid #1A1206;
+  border-top:0;border-left:0;transform:rotate(42deg) translate(-1px,-1px)}
+.check:hover input{border-color:var(--brass)}
+
+/* ---------- tips ---------- */
+.tip{
+  border:1px solid var(--line);border-left:2px solid var(--brass);border-radius:0 10px 10px 0;
+  padding:14px 16px;margin:20px 0 0;text-align:left;
+  background:linear-gradient(100deg,rgba(217,168,60,.06),transparent 70%);
+}
+.tip-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.tip-head span{font-size:10.5px;letter-spacing:.2em;color:var(--brass)}
+.tip-head button{font-size:11px;color:var(--paper-dd);border-bottom:1px solid var(--line-2);padding-bottom:1px}
+.tip-head button:hover{color:var(--paper)}
+.tip p{font-size:13.5px;line-height:1.85;color:var(--paper)}
+
+/* ============ stage (training) ============ */
+.stage{
+  position:fixed;inset:0;z-index:60;background:var(--ink);
+  display:flex;flex-direction:column;
+  padding:max(14px,env(safe-area-inset-top)) 20px max(18px,env(safe-area-inset-bottom));
+}
+.stage::before{
+  content:"";position:absolute;inset:0;pointer-events:none;transition:background .6s;
+  background:radial-gradient(60% 45% at 50% 42%,var(--glow,rgba(217,168,60,.14)),transparent 72%);
+}
+.stage[hidden]{display:none}
+.stage-in{position:relative;z-index:1;display:flex;flex-direction:column;height:100%;max-width:560px;margin:0 auto;width:100%}
+.stage-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.stage-id{text-align:center;flex:1;min-width:0}
+.stage-id .n{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.2em;color:var(--brass)}
+.stage-id .t{font-family:"Zen Old Mincho",serif;font-size:15px;letter-spacing:.04em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.stage-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px}
+.orb-wrap{position:relative;width:min(74vw,300px);aspect-ratio:1;transition:width .55s cubic-bezier(.2,.8,.25,1)}
+.stage.resting .orb-wrap{width:min(46vw,186px)}
+.stage.resting .stage-body{gap:16px}
+.ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ring .bg{fill:none;stroke:rgba(237,231,218,.09);stroke-width:2}
+.ring .fg{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;transition:stroke .5s}
+.orb{
+  position:absolute;left:50%;top:50%;width:76%;aspect-ratio:1;border-radius:50%;
+  transform:translate(-50%,-50%) scale(.45);
+  background:radial-gradient(circle at 34% 30%,rgba(255,255,255,.28),transparent 55%),
+             radial-gradient(circle,var(--accent),var(--accent-d) 78%);
+  box-shadow:0 0 60px -6px var(--accent);
+  transition:background .5s,box-shadow .5s;will-change:transform;
+}
+.orb-txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.cue{
+  font-family:"Zen Old Mincho",serif;font-weight:700;font-size:34px;letter-spacing:.1em;
+  text-shadow:0 2px 20px rgba(0,0,0,.6);
+}
+.beat-n{font-family:"IBM Plex Mono",monospace;font-size:46px;line-height:1;font-weight:500;text-shadow:0 2px 20px rgba(0,0,0,.5)}
+.cue-sub{font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.86);text-shadow:0 1px 8px rgba(0,0,0,.75);max-width:88%;text-align:center;margin-top:4px}
+.setline{
+  font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.18em;color:var(--paper-d);
+}
+.stage-bottom{display:flex;flex-direction:column;gap:14px}
+.next-hint{font-size:11.5px;color:var(--paper-dd);text-align:center;font-family:"IBM Plex Mono",monospace;letter-spacing:.06em}
+/* 休憩中に出る「次にやること」カード */
+.rest-card{
+  width:100%;max-width:400px;border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;text-align:left;
+  background:linear-gradient(150deg,rgba(255,255,255,.05),rgba(255,255,255,.012));
+  animation:rise .4s cubic-bezier(.2,.8,.25,1);
+}
+.rest-card[hidden]{display:none}
+.rest-card .rk{font-size:10px;letter-spacing:.2em;color:var(--brass);margin-bottom:5px}
+.rest-card h4{font-family:"Zen Old Mincho",serif;font-size:18px;font-weight:600;letter-spacing:.03em}
+.rest-card .rd{font-size:13px;line-height:1.75;color:var(--paper-d);margin-top:6px}
+.rest-card .rp{
+  font-size:11px;letter-spacing:.04em;color:var(--paper-dd);
+  margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);
+}
+.toggles{display:flex;gap:8px;justify-content:center}
+.toggles .chip{padding:6px 14px;font-family:"Zen Kaku Gothic New",sans-serif;font-size:12px;letter-spacing:.02em}
+.toggles .chip::before{
+  content:"";display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:currentColor;opacity:.35;margin-right:7px;vertical-align:1px;
+}
+.toggles .chip.on::before{opacity:1;background:#1A1206}
+.ctrl{display:flex;gap:8px}
+.ctrl button{
+  flex:1;padding:13px 0;border-radius:10px;border:1px solid var(--line-2);
+  font-size:13.5px;font-weight:500;color:var(--paper-d);transition:.18s;
+}
+.ctrl button:hover{border-color:var(--paper-d);color:var(--paper)}
+.ctrl button.key{background:var(--paper);border-color:var(--paper);color:#12161D;font-weight:700;flex:1.6}
+.ctrl button.key:hover{background:var(--brass-hi);border-color:var(--brass-hi)}
+
+/* pulse on beat */
+.beat-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--paper-dd);margin:0 auto;
+  transition:transform .07s,background .07s;
+}
+.beat-dot.hit{transform:scale(2.1);background:var(--brass)}
+
+/* ---------- done ---------- */
+.done{
+  position:fixed;inset:0;z-index:70;background:rgba(8,10,14,.92);backdrop-filter:blur(14px);
+  display:flex;align-items:center;justify-content:center;padding:24px;overflow-y:auto;
+}
+.done[hidden]{display:none}
+.done-card{max-width:380px;width:100%;text-align:center;margin:auto}
+.done .big-flame{width:120px;height:138px;margin:0 auto 4px;position:relative}
+.done .big-flame svg{width:100%;height:100%;filter:drop-shadow(0 0 26px rgba(255,140,40,.5))}
+.done .big-flame .num{
+  position:absolute;left:0;right:0;top:57%;transform:translateY(-50%);text-align:center;
+  font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:44px;color:#2A1405;
+}
+.done h2{font-family:"Zen Old Mincho",serif;font-size:22px;margin:10px 0 6px;letter-spacing:.06em}
+.done p{font-size:13px;color:var(--paper-d)}
+.done-stats{
+  display:flex;gap:10px;margin:20px 0 22px;
+}
+.stat{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 4px}
+.stat b{display:block;font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:500}
+.stat s{text-decoration:none;font-size:10px;color:var(--paper-dd);letter-spacing:.08em}
+
+/* ============ terms gate ============ */
+.gate{
+  position:fixed;inset:0;z-index:95;background:var(--ink);overflow-y:auto;
+  display:flex;align-items:center;justify-content:center;
+  padding:max(24px,env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom));
+}
+.gate[hidden]{display:none}
+.gate::before{
+  content:"";position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(65% 45% at 50% 0%,rgba(217,168,60,.16),transparent 70%);
+}
+.gate-card{
+  position:relative;max-width:440px;width:100%;margin:auto;
+  border:1px solid var(--line);border-radius:16px;padding:26px 22px;
+  background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.012));
+  animation:rise .45s cubic-bezier(.2,.8,.25,1);
+}
+.gate-card h2{font-family:"Zen Old Mincho",serif;font-size:24px;letter-spacing:.05em;margin-bottom:16px}
+.gate-card .kicker{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.2em;color:var(--brass)}
+.gate-body{border-top:1px solid var(--line);padding-top:14px;margin-bottom:18px}
+.gate-body p{font-size:13px;color:var(--paper-d);line-height:1.85;margin-bottom:12px}
+.gate-body b{color:var(--paper)}
+.gate .cta[disabled]{
+  background:rgba(237,231,218,.08);color:var(--paper-dd);box-shadow:none;
+  cursor:not-allowed;transform:none;
+}
+.gate .cta[disabled] span{opacity:.5}
+
+/* ============ splash（起動時のストリーク画面） ============ */
+.splash{
+  position:fixed;inset:0;z-index:90;background:var(--ink);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;padding:24px 20px;overflow-y:auto;
+}
+.splash[hidden]{display:none}
+.splash::before{
+  content:"";position:fixed;inset:0;pointer-events:none;transition:background .6s;
+  background:radial-gradient(55% 40% at 50% 38%,rgba(217,168,60,.14),transparent 72%);
+}
+.splash.is-super::before{background:radial-gradient(55% 40% at 50% 38%,rgba(70,170,255,.20),transparent 72%)}
+.splash-in{position:relative;text-align:center;margin:auto;width:100%;max-width:320px;animation:rise .5s cubic-bezier(.2,.8,.25,1)}
+.splash .streak{width:118px;height:136px;margin:14px auto 0}
+.splash .streak:hover{transform:none}
+.splash .streak svg{filter:drop-shadow(0 0 24px rgba(255,140,40,.45))}
+.splash .streak .num{top:57%;font-size:42px;color:#2A1405}
+.splash .streak.super .num{color:#062032}
+.splash .streak.super .spark{width:4px;height:4px;bottom:14px;animation-name:spark-l;animation-duration:2.9s}
+.splash .streak.super::before{inset:-22px}
+.sp-days{margin-top:14px;font-size:13px;color:var(--paper-d);letter-spacing:.06em}
+.sp-days b{font-family:"IBM Plex Mono",monospace;font-size:28px;font-weight:500;color:var(--paper);margin-right:5px}
+.sp-state{font-size:12.5px;color:var(--paper-dd);margin-top:2px}
+
+/* 今月のカレンダー */
+.sp-cal{margin:22px 0 10px}
+.mcal-title{font-size:11px;letter-spacing:.24em;color:var(--brass);margin-bottom:10px}
+.mcal-h,.mcal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.mcal-h{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--paper-dd);margin-bottom:5px;letter-spacing:.04em}
+.mcal span{
+  aspect-ratio:1;display:grid;place-items:center;border-radius:6px;
+  font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--paper-dd);
+  background:rgba(237,231,218,.055);
+}
+.mcal .pad{background:none}
+.mcal .future{opacity:.3}
+.mcal .on{background:linear-gradient(160deg,var(--brass),#B45B20);color:#1A1206;font-weight:600}
+.mcal .sup{
+  background:linear-gradient(160deg,#B7F3FF,#1B5CFF);color:#062032;font-weight:600;
+  box-shadow:0 0 9px rgba(80,200,255,.55);
+}
+.mcal .today{outline:1.5px solid var(--paper);outline-offset:1px;color:var(--paper)}
+.mcal .today.on,.mcal .today.sup{color:#0C0F14}
+.sp-legend{display:flex;gap:14px;justify-content:center;font-size:10px;color:var(--paper-dd);margin-bottom:26px}
+.sp-legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.sp-legend .c-on{background:linear-gradient(160deg,var(--brass),#B45B20)}
+.sp-legend .c-sup{background:linear-gradient(160deg,#B7F3FF,#1B5CFF);box-shadow:0 0 7px rgba(80,200,255,.6)}
+.sp-legend .c-today{background:none;border:1.5px solid var(--paper)}
+.sp-tap{
+  font-family:"Zen Old Mincho",serif;font-size:17px;letter-spacing:.22em;color:var(--paper);
+  animation:tap 2.4s ease-in-out infinite;
+}
+@keyframes tap{0%,100%{opacity:.42}50%{opacity:1}}
+.sp-sub{font-size:10.5px;color:var(--paper-dd);letter-spacing:.12em;margin-top:9px;font-family:"IBM Plex Mono",monospace}
+
+/* ---------- modal ---------- */
+.modal{
+  position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center;
+  background:rgba(6,8,11,.72);backdrop-filter:blur(8px);padding:0;
+}
+.modal[hidden]{display:none}
+.sheet{
+  width:100%;max-width:560px;max-height:86vh;overflow-y:auto;
+  background:var(--ink-2);border:1px solid var(--line-2);
+  border-radius:18px 18px 0 0;padding:26px 22px calc(30px + env(safe-area-inset-bottom));
+  animation:rise .32s cubic-bezier(.2,.8,.25,1);
+}
+@keyframes rise{from{transform:translateY(28px);opacity:0}to{transform:none;opacity:1}}
+.sheet .grab{width:38px;height:3px;border-radius:3px;background:var(--line-2);margin:-10px auto 18px}
+.sheet h2{font-family:"Zen Old Mincho",serif;font-size:20px;letter-spacing:.05em;margin-bottom:4px}
+.sheet .kicker{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.2em;color:var(--brass);margin-bottom:14px}
+.sheet h3{
+  font-size:12px;letter-spacing:.1em;color:var(--brass);margin:22px 0 8px;
+  padding-bottom:6px;border-bottom:1px solid var(--line);
+}
+.sheet p{font-size:13.5px;color:var(--paper-d);line-height:1.85}
+.sheet .quote{
+  border-left:2px solid var(--brass);padding:2px 0 2px 14px;color:var(--paper);font-size:14px;
+}
+.sheet ul{list-style:none;font-size:13px;color:var(--paper-d)}
+.sheet li{padding:9px 0;border-bottom:1px dashed var(--line);display:flex;gap:12px}
+.sheet li em{font-style:normal;font-family:"IBM Plex Mono",monospace;color:var(--brass);flex:none}
+.sheet .how-block{padding:14px 0;border-top:1px solid var(--line)}
+.sheet .how-block:last-of-type{border-bottom:1px solid var(--line)}
+.sheet .how-lbl{
+  font-size:10px;letter-spacing:.2em;color:var(--paper-dd);margin-bottom:6px;
+}
+.sheet .how-block.key{
+  border-left:2px solid var(--brass);padding-left:14px;
+  background:linear-gradient(100deg,rgba(217,168,60,.06),transparent 65%);
+}
+.sheet .how-block.key .how-lbl{color:var(--brass)}
+.sheet .how-block.key p:last-child{color:var(--paper);font-size:14px}
+.sheet .credit{
+  font-family:"IBM Plex Mono",monospace;font-size:12px;line-height:2;color:var(--paper-d);
+  border-left:2px solid var(--line-2);padding-left:14px;
+}
+.sheet .credit a{color:var(--brass);text-decoration:none;border-bottom:1px solid var(--brass-d)}
+.sheet .credit a:hover{color:var(--brass-hi);border-color:var(--brass-hi)}
+.sheet-cal{margin:6px 0 10px;max-width:320px}
+.sheet .sp-legend{justify-content:flex-start;margin-bottom:4px}
+.sheet .close{
+  width:100%;margin-top:24px;padding:13px;border-radius:10px;border:1px solid var(--line-2);
+  font-size:14px;color:var(--paper-d);
+}
+.sheet .close:hover{border-color:var(--paper-d);color:var(--paper)}
+.note{font-size:11.5px;color:var(--paper-dd);line-height:1.8;margin-top:14px}
+
+/* streak calendar */
+
+@media (max-width:400px){
+  .hero h1{font-size:25px}
+  .cue{font-size:29px}
+  .beat-n{font-size:40px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== terms (初回のみ) ===== -->
+<div class="gate" id="terms" hidden>
+  <div class="gate-card">
+    <p class="kicker">Terms of use</p>
+    <h2>はじめる前に</h2>
+    <div class="gate-body">
+      <p>本アプリは呼吸筋トレーニングをサポートするものです。<b>無理のない範囲で実施し、めまいや体調不良を感じた場合は直ちに中止してください。</b></p>
+      <p>医療行為・診断・治療を目的としたものではありません。呼吸器や循環器に持病のある方、妊娠中の方は、事前に医師にご相談ください。</p>
+      <p>トレーニングの記録はお使いの端末内（localStorage）にのみ保存され、外部に送信されることはありません。</p>
+      <p class="note">※このメニューは、管楽器奏者のための呼吸筋トレーニング(RMT)に関する学術論文の知見を参考に構成されています。</p>
+    </div>
+    <label class="check"><input type="checkbox" id="termsChk"><span>上記の内容に同意します</span></label>
+    <button class="cta" id="termsBtn" disabled>同意してはじめる <span>Enter</span></button>
+  </div>
+</div>
+
+<!-- ===== splash / streak gate ===== -->
+<div class="splash" id="splash" hidden>
+  <div class="splash-in">
+    <p class="eyebrow" id="spKick">Current streak</p>
+    <div class="streak cold" id="spFlame">
+      <svg viewBox="0 0 48 56" aria-hidden="true">
+        <path fill="url(#fg1)" d="M24 1.5c4.6 8.4 8.6 11.9 11.6 16.9 3.4 5.7 5.4 11 5.4 15.9C41 45.7 33.4 54.5 24 54.5S7 45.7 7 34.3c0-5.4 1.9-9.6 4.5-13.2 1.2 3.1 3.1 4.7 5 5.2C15.2 19.6 18 10 24 1.5z"/>
+        <path fill="url(#fg2)" opacity=".55" d="M24 24c2.6 4.2 6.6 7.6 6.6 13.1 0 4.2-3 7.6-6.6 7.6s-6.6-3.4-6.6-7.6c0-3.4 2.1-5.5 3.4-8.1.6 1.4 1.5 2 2.3 2.2-.1-2.6.9-5.2.9-7.2z"/>
+      </svg>
+      <span class="num" id="spNum">0</span>
+      <span class="spark" style="--x:-40px;--d:0s"></span>
+      <span class="spark" style="--x:32px;--d:.35s"></span>
+      <span class="spark" style="--x:-14px;--d:.7s"></span>
+      <span class="spark" style="--x:46px;--d:1.05s"></span>
+      <span class="spark" style="--x:10px;--d:1.4s"></span>
+      <span class="spark" style="--x:-50px;--d:1.75s"></span>
+      <span class="spark" style="--x:22px;--d:2.1s"></span>
+    </div>
+    <p class="sp-days"><b id="spDays">0</b>日連続</p>
+    <p class="sp-state" id="spState">今日はまだです</p>
+    <div class="sp-cal" id="spCal"></div>
+    <div class="sp-legend">
+      <span><i class="c-on"></i>1回</span>
+      <span><i class="c-sup"></i>2回</span>
+      <span><i class="c-today"></i>今日</span>
+    </div>
+    <p class="sp-tap">タップして開始</p>
+    <p class="sp-sub" id="spSub"></p>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="mark">RMT</span>
+      <span class="jp">呼吸筋トレーニング</span>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="bgmBtn" title="BGM" hidden>♪</button>
+      <button class="streak cold" id="streakBtn" title="継続日数">
+        <svg viewBox="0 0 48 56" aria-hidden="true">
+          <defs>
+            <linearGradient id="fg1" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stop-color="#FF4D2D"/><stop offset=".45" stop-color="#FF8A1E"/><stop offset="1" stop-color="#FFD24A"/>
+            </linearGradient>
+            <linearGradient id="fg2" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stop-color="#FFD24A"/><stop offset="1" stop-color="#FFF0B8"/>
+            </linearGradient>
+            <linearGradient id="bf1" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stop-color="#1B5CFF"/><stop offset=".42" stop-color="#31B6FF"/><stop offset="1" stop-color="#B7F3FF"/>
+            </linearGradient>
+            <linearGradient id="bf2" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stop-color="#C6F4FF"/><stop offset="1" stop-color="#FFFFFF"/>
+            </linearGradient>
+          </defs>
+          <path fill="url(#fg1)" d="M24 1.5c4.6 8.4 8.6 11.9 11.6 16.9 3.4 5.7 5.4 11 5.4 15.9C41 45.7 33.4 54.5 24 54.5S7 45.7 7 34.3c0-5.4 1.9-9.6 4.5-13.2 1.2 3.1 3.1 4.7 5 5.2C15.2 19.6 18 10 24 1.5z"/>
+          <path fill="url(#fg2)" opacity=".55" d="M24 24c2.6 4.2 6.6 7.6 6.6 13.1 0 4.2-3 7.6-6.6 7.6s-6.6-3.4-6.6-7.6c0-3.4 2.1-5.5 3.4-8.1.6 1.4 1.5 2 2.3 2.2-.1-2.6.9-5.2.9-7.2z"/>
+        </svg>
+        <span class="num mono" id="streakNum">0</span>
+        <span class="spark" style="--x:-13px;--d:0s"></span>
+        <span class="spark" style="--x:11px;--d:.35s"></span>
+        <span class="spark" style="--x:-5px;--d:.7s"></span>
+        <span class="spark" style="--x:16px;--d:1.05s"></span>
+        <span class="spark" style="--x:3px;--d:1.4s"></span>
+        <span class="spark" style="--x:-17px;--d:1.75s"></span>
+      </button>
+      <button class="icon-btn" id="infoBtn" title="アプリについて">i</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">Today&rsquo;s session</p>
+    <h1>息に、<em>拍</em>を。</h1>
+    <p class="lead">Step 1 から 4 まで、拍を頼りに通しで。<br>下の帯は今日吸う息と吐く息の設計図です。</p>
+
+    <div class="score" id="sessionScore"></div>
+    <div class="legend">
+      <span><i style="background:var(--air)"></i>吸う</span>
+      <span><i style="background:var(--brass)"></i>吐く</span>
+      <span><i style="background:var(--ember)"></i>フッ！</span>
+      <span><i style="background:rgba(237,231,218,.25)"></i>休む</span>
+    </div>
+    <div class="hero-meta">
+      <span class="lbl">所要時間</span>
+      <strong class="mono" id="sessTime">—</strong>
+      <span id="sessBeats"></span>
+    </div>
+
+    <button class="cta" id="startAll">通しで始める <span>STEP 1→4</span></button>
+  </section>
+
+  <section class="tempo">
+    <div class="tempo-head">
+      <div class="bpm-read"><b class="mono" id="bpmRead">60</b><s>BPM</s></div>
+      <p class="eyebrow">Tempo</p>
+    </div>
+    <input type="range" id="bpmRange" min="40" max="160" step="1" value="60" aria-label="BPM">
+    <div class="presets" id="presets">
+      <button class="chip on" data-bpm="60">60 じっくり</button>
+      <button class="chip" data-bpm="80">80 標準</button>
+      <button class="chip" data-bpm="100">100 短縮</button>
+      <button class="chip" data-bpm="132">132 時短</button>
+    </div>
+    <p class="hint">時間がない日は BPM を上げれば、同じメニューを短時間で走り切れます。</p>
+  </section>
+
+  <div class="sec-head">
+    <p class="eyebrow">4 steps</p><div class="rule"></div>
+  </div>
+  <section id="stepList"></section>
+
+  <p class="foot">
+    ※このメニューは、管楽器奏者のための呼吸筋トレーニング(RMT)に関する<br>学術論文の知見を参考に構成されています。
+  </p>
+</div>
+
+<!-- ===== brief (開始前の説明) ===== -->
+<div class="brief" id="brief" hidden>
+  <div class="brief-in">
+    <div class="brief-head">
+      <button class="icon-btn" id="briefBack" title="戻る">✕</button>
+      <p class="eyebrow">Before you start</p>
+    </div>
+
+    <h2 id="briefTitle">4ステップを通しで走ります</h2>
+    <p class="brief-lead" id="briefLead"></p>
+
+    <div class="brief-rules">
+      <div class="rule-row"><span class="rule-ico" data-i="circle"></span>
+        <p><b>円が広がったら吸う、縮んだら吐く。</b>円の中の数字は、そのフェーズの残り拍数です。</p></div>
+      <div class="rule-row"><span class="rule-ico" data-i="beat"></span>
+        <p><b>音だけで進行がわかります。</b>吸う合図は<b>上がる2音</b>、吐く合図は<b>下がる2音</b>。休憩の残り3拍は「3・2・1」と音程が上がっていくので、目を閉じたままでも再開のタイミングがわかります。</p></div>
+      <div class="rule-row"><span class="rule-ico" data-i="stop"></span>
+        <p><b>苦しければ止めてください。</b>一時停止はスペースキー、または画面下のボタンで。</p></div>
+    </div>
+
+    <div class="brief-sec">
+      <p class="eyebrow">Menu</p>
+      <div id="briefSteps"></div>
+    </div>
+
+    <div class="brief-foot">
+      <div class="brief-meta">
+        <span><b class="mono" id="briefTime">—</b><s>所要時間</s></span>
+        <span><b class="mono" id="briefBpm">60</b><s>BPM</s></span>
+        <span><b class="mono" id="briefBeats">—</b><s>拍</s></span>
+      </div>
+      <label class="check"><input type="checkbox" id="briefChk"><span>今後この説明を表示しない</span></label>
+      <button class="cta" id="briefStart">4拍のカウントから始める <span>Ready</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== stage ===== -->
+<div class="stage" id="stage" hidden>
+  <div class="stage-in">
+    <div class="stage-top">
+      <button class="icon-btn" id="stStop2" title="終了">✕</button>
+      <div class="stage-id">
+        <div class="n" id="stNum">STEP 01</div>
+        <div class="t" id="stName">横隔膜ストレッチ</div>
+      </div>
+      <button class="icon-btn" id="stHelp" title="やり方">?</button>
+    </div>
+
+    <div class="stage-body">
+      <div class="orb-wrap">
+        <svg class="ring" viewBox="0 0 320 320" aria-hidden="true">
+          <circle class="bg" cx="160" cy="160" r="152"/>
+          <circle class="fg" id="ringFg" cx="160" cy="160" r="152"/>
+        </svg>
+        <div class="orb" id="orb"></div>
+        <div class="orb-txt">
+          <div class="cue" id="cueText">用意</div>
+          <div class="beat-n mono" id="beatNum">4</div>
+          <div class="cue-sub" id="cueSub"></div>
+        </div>
+      </div>
+      <div class="setline" id="setText">SET 1 / 5</div>
+      <div class="beat-dot" id="beatDot"></div>
+
+      <div class="rest-card" id="restCard" hidden>
+        <p class="rk mono" id="restKick">NEXT STEP 02</p>
+        <h4 id="restName">吸気筋トレーニング</h4>
+        <p class="rd" id="restDesc"></p>
+        <p class="rp mono" id="restPat"></p>
+      </div>
+    </div>
+
+    <div class="stage-bottom">
+      <div class="score" id="stageScore"><div class="playhead" id="playhead"></div></div>
+      <div class="next-hint" id="nextHint"></div>
+      <div class="toggles">
+        <button class="chip on" id="stMute">メトロノーム</button>
+      </div>
+      <div class="ctrl">
+        <button id="stPause" class="key">一時停止</button>
+        <button id="stStop">終了</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== done ===== -->
+<div class="done" id="done" hidden>
+  <div class="done-card">
+    <div class="big-flame streak" id="bigFlame">
+      <svg viewBox="0 0 48 56" aria-hidden="true">
+        <path fill="url(#fg1)" d="M24 1.5c4.6 8.4 8.6 11.9 11.6 16.9 3.4 5.7 5.4 11 5.4 15.9C41 45.7 33.4 54.5 24 54.5S7 45.7 7 34.3c0-5.4 1.9-9.6 4.5-13.2 1.2 3.1 3.1 4.7 5 5.2C15.2 19.6 18 10 24 1.5z"/>
+        <path fill="url(#fg2)" opacity=".55" d="M24 24c2.6 4.2 6.6 7.6 6.6 13.1 0 4.2-3 7.6-6.6 7.6s-6.6-3.4-6.6-7.6c0-3.4 2.1-5.5 3.4-8.1.6 1.4 1.5 2 2.3 2.2-.1-2.6.9-5.2.9-7.2z"/>
+      </svg>
+      <span class="num" id="doneStreak">1</span>
+      <span class="spark" style="--x:-34px;--d:0s"></span>
+      <span class="spark" style="--x:28px;--d:.3s"></span>
+      <span class="spark" style="--x:-12px;--d:.6s"></span>
+      <span class="spark" style="--x:40px;--d:.9s"></span>
+      <span class="spark" style="--x:8px;--d:1.2s"></span>
+      <span class="spark" style="--x:-44px;--d:1.5s"></span>
+      <span class="spark" style="--x:18px;--d:1.8s"></span>
+      <span class="spark" style="--x:-24px;--d:2.1s"></span>
+    </div>
+    <p class="super-badge mono" id="doneBadge" hidden>◆ SUPER STREAK ◆</p>
+    <h2 id="doneTitle">今日の息、記録しました</h2>
+    <p id="doneMsg">明日も同じ拍で会いましょう。</p>
+
+    <div class="tip">
+      <div class="tip-head">
+        <span class="mono" id="tipNo">TIP 01</span>
+        <button id="tipMore">別のヒント</button>
+      </div>
+      <p id="tipTxt"></p>
+    </div>
+
+    <div class="done-stats">
+      <div class="stat"><b class="mono" id="dsDays">1</b><s>連続日数</s></div>
+      <div class="stat"><b class="mono" id="dsBest">1</b><s>最高記録</s></div>
+      <div class="stat"><b class="mono" id="dsTotal">1</b><s>通算回数</s></div>
+    </div>
+    <button class="cta" id="doneClose">閉じる <span>Home</span></button>
+  </div>
+</div>
+
+<!-- ===== modal ===== -->
+<div class="modal" id="modal" hidden>
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+</div>
+
+<script>
+"use strict";
+/* =========================================================
+   1. メニュー定義
+   ========================================================= */
+const P = (type, beats, cue, set, sets, extra) =>
+  Object.assign({type, beats, cue: cue || "", set: set || 0, sets: sets || 0}, extra || {});
+
+const STEPS = [
+  {
+    id:1, num:"01", name:"横隔膜ストレッチ", en:"DIAPHRAGM STRETCH",
+    sets:5, pattern:"4拍 吸う → 8拍 吐く",
+    guide:{
+      set:"仰向け、または背筋を伸ばした立ち姿勢で行います。",
+      act:"鼻から吸う際、胸ではなくお腹周りが360度全方位に膨らむことを意識。吐く時は歯の隙間から「スーー」と摩擦音を立て、最後まで一定の圧力を保ちながら空気を完全に絞り出します。",
+      why:"通常の呼吸では使われない肺の最大容積（努力肺活量）を広げ、太く芯のある音色を根底から支える土台を作ります。"
+    },
+    build(){
+      const a=[];
+      for(let s=1;s<=5;s++){
+        a.push(P("inhale",4,"鼻から / お腹を360度ふくらませる",s,5));
+        a.push(P("exhale",8,"歯の隙間から「スーー」／一定の圧力で",s,5));
+      }
+      return a;
+    }
+  },
+  {
+    id:2, num:"02", name:"吸気筋トレーニング", en:"INSPIRATORY MUSCLE",
+    sets:10, pattern:"2拍 吸う → 2拍 休む",
+    guide:{
+      set:"手のひらで口を覆い、わずかな隙間だけを残します。",
+      act:"意図的に「息を吸いにくい状態（物理的な抵抗）」を作り、その状態で指定の拍数で一気に深く吸い込みます。",
+      why:"吸気筋（横隔膜や外肋間筋）に直接負荷をかけて最大吸気圧を高め、アップテンポな曲中の短いキャッチブレスでも瞬時に大量の空気を確保できるようにします。"
+    },
+    build(){
+      const a=[];
+      for(let s=1;s<=10;s++){
+        a.push(P("inhale",2,"手のひらの抵抗に逆らって",s,10));
+        a.push(P("release",2,"力を抜いて吐く",s,10));
+      }
+      return a;
+    }
+  },
+  {
+    id:3, num:"03", name:"長時間呼気コントロール", en:"SUSTAINED EXHALE",
+    sets:5, pattern:"2拍 吸う → 18拍 吐く",
+    guide:{
+      set:"唇を楽器を吹く時（アンブシュア）に近い「ウ」の形にすぼめ、息の出口を小さくします。",
+      act:"気道内の圧力を高く保ちながら、細く・長く・一定のスピードで息を吐き続けます。",
+      why:"気道の虚脱を防ぎ、オープニングが広く息が入りやすいマウスピースでも息を持っていかれず、フレーズの最後までコントロールし切る筋持久力が養われます。"
+    },
+    build(){
+      const a=[];
+      for(let s=1;s<=5;s++){
+        a.push(P("inhale",2,"素早く深く",s,5));
+        a.push(P("exhale",18,"「ウ」の口／細く長く一定に",s,5));
+      }
+      return a;
+    }
+  },
+  {
+    id:4, num:"04", name:"最大呼気圧トレーニング", full:"最大呼気圧・バーストトレーニング",
+    en:"MAX EXPIRATORY / BURST",
+    sets:2, pattern:"1拍「フッ！」×20 → 16拍 休憩",
+    guide:{
+      set:"立ったまま、お腹の底の筋肉を瞬間的に収縮させる感覚を確かめます。",
+      act:"「フッ！フッ！」と短く鋭く、1拍ずつ息を連続で吐き出します。",
+      why:"瞬間的に強い圧力を生み出すトレーニングであり、大編成のバンド内でも音が埋もれない迫力あるフォルテッシモや、アタックの明確さを飛躍的に高める効果が実証されています。"
+    },
+    build(){
+      const a=[];
+      for(let s=1;s<=2;s++){
+        if(s>1) a.push(P("rest",16,"呼吸を整える",s,2));
+        a.push(P("prep",2,"肺いっぱいに吸う",s,2));
+        for(let i=1;i<=20;i++) a.push(P("puff",1,i+" / 20",s,2));
+      }
+      return a;
+    }
+  }
+];
+const stepById = id => STEPS.find(s=>s.id===id);
+
+const META = {
+  countin:{label:"用意",   c:"mute",  accent:"neutral"},
+  interval:{label:"休憩",  c:"mute",  accent:"neutral"},
+  rest:{label:"休む",      c:"mute",  accent:"neutral"},
+  inhale:{label:"吸って",  c:"air",   accent:"air"},
+  prep:{label:"吸って",    c:"air",   accent:"air"},
+  exhale:{label:"吐いて",  c:"brass", accent:"brass"},
+  release:{label:"吐いて", c:"brass", accent:"brass"},
+  puff:{label:"フッ！",    c:"ember", accent:"ember"}
+};
+const ACCENTS = {
+  air:{a:"#7FD1E8",d:"#2D6273",glow:"rgba(127,209,232,.16)"},
+  brass:{a:"#D9A83C",d:"#8A6C24",glow:"rgba(217,168,60,.16)"},
+  ember:{a:"#FF6F53",d:"#8E3521",glow:"rgba(255,111,83,.18)"},
+  neutral:{a:"#6E7A8C",d:"#2A323E",glow:"rgba(140,155,175,.10)"}
+};
+
+/* =========================================================
+   2. セッション組み立て
+   ========================================================= */
+function buildSession(ids){
+  const ph=[];
+  ph.push(P("countin",4,"合図に合わせて",0,0,{stepId:ids[0]}));
+  ids.forEach((id,i)=>{
+    if(i>0) ph.push(P("interval",12,"肩の力を抜いて次へ",0,0,{stepId:id}));
+    stepById(id).build().forEach(p=>{p.stepId=id; ph.push(p);});
+  });
+  let b=0;
+  ph.forEach(p=>{p.start=b; b+=p.beats; p.end=b;});
+  return {phases:ph, total:b, stepIds:ids};
+}
+const fmtTime = sec => Math.floor(sec/60)+":"+String(Math.round(sec%60)).padStart(2,"0");
+
+/* =========================================================
+   3. 呼吸譜(breath score)
+   ========================================================= */
+function renderScore(el, phases){
+  el.querySelectorAll(".blk").forEach(n=>n.remove());
+  const frag=document.createDocumentFragment();
+  phases.forEach(p=>{
+    const d=document.createElement("div");
+    d.className="blk";
+    d.dataset.c=META[p.type].c;
+    d.style.flex=p.beats+" 1 0";
+    frag.appendChild(d);
+  });
+  el.insertBefore(frag, el.firstChild);
+}
+
+/* =========================================================
+   4. 継続日数(Streak)
+   ========================================================= */
+const KEY="rmt.streak.v1";
+const dayKey=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const shift=n=>{const d=new Date();d.setDate(d.getDate()+n);return dayKey(d);};
+
+const BLANK={last:null,streak:0,best:0,total:0,days:[],supers:[],countDate:null,dailyCount:0};
+function loadStreak(){
+  try{
+    const s=JSON.parse(localStorage.getItem(KEY));
+    if(s && typeof s==="object") return syncDay(Object.assign({},BLANK,s));
+  }catch(e){}
+  return syncDay(Object.assign({},BLANK));
+}
+function saveStreak(s){ try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){} }
+
+/* 日付が変わっていたら本日の実行回数を必ず 0 に戻す */
+function syncDay(s){
+  const t=dayKey();
+  if(s.countDate!==t){
+    s.countDate=t;
+    /* 旧データ移行：今日すでに完了済みなら1回目とみなす */
+    s.dailyCount = (s.last===t) ? 1 : 0;
+    saveStreak(s);
+  }
+  return s;
+}
+const liveStreak = s => (s.last===dayKey()||s.last===shift(-1)) ? s.streak : 0;
+
+/* 1回目=連続日数+1 ／ 2回目=スーパーストリーク ／ 3回目以降=変化なし */
+function recordSession(){
+  const s=loadStreak(), t=dayKey();
+  let kind;
+  if(s.dailyCount===0){
+    s.streak = (s.last===shift(-1)) ? s.streak+1 : 1;
+    s.last=t;
+    if(!s.days.includes(t)) s.days.push(t);
+    s.days=s.days.slice(-120);
+    s.dailyCount=1; s.total+=1;
+    kind="first";
+  }else if(s.dailyCount===1){
+    s.dailyCount=2; s.total+=1;
+    if(!s.supers.includes(t)) s.supers.push(t);
+    s.supers=s.supers.slice(-120);
+    kind="super";
+  }else{
+    kind="extra";
+  }
+  s.best=Math.max(s.best,s.streak);
+  saveStreak(s);
+  return {s,kind};
+}
+function paintStreak(){
+  const s=loadStreak(), n=liveStreak(s), sup=s.dailyCount>=2;
+  streakNum.textContent=n;
+  streakBtn.classList.toggle("cold", s.dailyCount===0);
+  streakBtn.classList.toggle("super", sup);
+  streakBtn.title = sup ? n+"日連続 — 本日2回達成（スーパーストリーク）"
+                   : s.dailyCount===1 ? n+"日連続 — 今日は1回完了"
+                   : n+"日連続 — 今日はまだ";
+}
+/* 日付をまたいでも表示が古くならないよう監視 */
+let watchDay=dayKey();
+setInterval(()=>{
+  const d=dayKey();
+  if(d!==watchDay){ watchDay=d; paintStreak(); if(!splash.hidden) paintSplash(); }
+},20000);
+
+/* =========================================================
+   5. Web Audio メトロノーム
+   ========================================================= */
+let ac=null, muted=false;
+function audio(){
+  if(!ac) ac=new (window.AudioContext||window.webkitAudioContext)();
+  if(ac.state==="suspended") ac.resume();
+  return ac;
+}
+function tone(t,freq,dur,vol,type){
+  const c=audio();
+  const o=c.createOscillator(), g=c.createGain();
+  o.type=type||"triangle"; o.frequency.setValueAtTime(freq,t);
+  g.gain.setValueAtTime(0,t);
+  g.gain.linearRampToValueAtTime(vol,t+.005);
+  g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g); g.connect(c.destination);
+  o.start(t); o.stop(t+dur+.03);
+}
+/* kind: "beat" / "puff" / "cd3|cd2|cd1" / "start:<type>" */
+function playCue(t,kind){
+  if(muted) return;
+  if(kind==="puff"){ tone(t,1760,.05,.30,"square"); return; }
+  if(kind[0]==="c"){                       // 休憩ラストの 3・2・1
+    const f={3:659.25,2:880,1:1174.66}[+kind[2]];
+    tone(t,f,.11,.28,"triangle");
+    return;
+  }
+  if(kind[0]==="s"){                       // フェーズの切り替わり
+    const ty=kind.slice(6);
+    if(ty==="inhale"||ty==="prep"){        // 吸う = 上がる2音
+      tone(t,784,.07,.24); tone(t+.085,1174.66,.12,.24);
+    }else if(ty==="exhale"||ty==="release"){ // 吐く = 下がる2音
+      tone(t,1174.66,.07,.24); tone(t+.085,784,.14,.24);
+    }else if(ty==="puff"){
+      tone(t,1760,.05,.30,"square");
+    }else{                                  // 休憩 = 低く柔らかい音
+      tone(t,392,.22,.20,"sine");
+    }
+    return;
+  }
+  tone(t,880,.05,.11);                     // 通常の拍
+}
+function chime(sup){
+  if(muted) return;
+  const c=audio(), t0=c.currentTime;
+  const notes = sup ? [659.25,830.61,987.77,1318.51,1567.98] : [523.25,659.25,783.99,1046.5];
+  notes.forEach((f,i)=>{
+    const o=c.createOscillator(), g=c.createGain();
+    o.type="triangle"; o.frequency.value=f;
+    g.gain.setValueAtTime(0,t0+i*.11);
+    g.gain.linearRampToValueAtTime(.16,t0+i*.11+.02);
+    g.gain.exponentialRampToValueAtTime(.0001,t0+i*.11+(sup?1.1:.7));
+    o.connect(g); g.connect(c.destination);
+    o.start(t0+i*.11); o.stop(t0+i*.11+(sup?1.2:.8));
+  });
+}
+
+/* =========================================================
+   6. エンジン
+   ========================================================= */
+const S = {
+  bpm:60, sess:null, mode:"full",
+  running:false, paused:false,
+  t0:0, pausedBeat:0, beatDur:1,
+  nextBeat:0, accents:null, puffs:null,
+  raf:0, sched:0, idx:-1
+};
+const $ = id => document.getElementById(id);
+const RING_C = 2*Math.PI*152;
+ringFg.style.strokeDasharray = RING_C;
+
+/* トレーニング中は画面を消灯させない（対応ブラウザのみ・失敗しても無視） */
+let wakeLock=null;
+async function keepAwake(){
+  try{ if(navigator.wakeLock) wakeLock = await navigator.wakeLock.request("screen"); }catch(e){}
+}
+function releaseAwake(){ try{ if(wakeLock){ wakeLock.release(); wakeLock=null; } }catch(e){} }
+document.addEventListener("visibilitychange",()=>{
+  if(document.visibilityState==="visible" && S.running && !S.paused && !wakeLock) keepAwake();
+});
+
+function buildCues(sess){
+  const cues=new Array(sess.total).fill("beat");
+  sess.phases.forEach(p=>{
+    const resty = (p.type==="rest"||p.type==="interval"||p.type==="countin");
+    for(let b=p.start;b<p.end;b++){
+      let k = (b===p.start) ? "start:"+p.type : "beat";
+      if(p.type==="puff") k="puff";
+      if(resty){ const left=p.end-b; if(left<=3) k="cd"+left; }   // 残り3・2・1
+      cues[b]=k;
+    }
+  });
+  return cues;
+}
+function startSession(ids, mode){
+  audio();
+  bgmDuck();
+  keepAwake();
+  S.sess=buildSession(ids); S.mode=mode;
+  S.beatDur=60/S.bpm;
+  S.cues=buildCues(S.sess);
+  S.idx=-1; S.paused=false; S.running=true;
+  S.t0=audio().currentTime+.35;
+  S.nextBeat=0;
+  renderScore(stageScore, S.sess.phases);
+  stage.hidden=false;
+  stPause.textContent="一時停止";
+  S.sched=setInterval(scheduler,25);
+  scheduler();
+  S.raf=requestAnimationFrame(frame);
+}
+function scheduler(){
+  if(!S.running||S.paused) return;
+  const now=audio().currentTime;
+  while(S.nextBeat<S.sess.total && S.t0+S.nextBeat*S.beatDur < now+.12){
+    const t=S.t0+S.nextBeat*S.beatDur;
+    /* 他アプリに切り替えるとタイマーが間引かれ、過去の拍がまとめて
+       予約されて一斉に鳴ってしまう。過ぎた拍は鳴らさず読み飛ばす。 */
+    if(t >= now-0.02) playCue(t, S.cues[S.nextBeat]);
+    S.nextBeat++;
+  }
+}
+function frame(){
+  if(!S.running||S.paused) return;
+  const beats=(audio().currentTime-S.t0)/S.beatDur;
+  if(beats>=S.sess.total){ finish(); return; }
+  paint(beats);
+  S.raf=requestAnimationFrame(frame);
+}
+
+let lastDot=-1;
+function paint(beats){
+  const b=Math.max(0,beats), ph=S.sess.phases;
+  let i=Math.max(0,S.idx);
+  while(i<ph.length-1 && b>=ph[i].end) i++;
+  while(i>0 && b<ph[i].start) i--;
+  const p=ph[i], prog=Math.min(1,Math.max(0,(b-p.start)/p.beats));
+
+  if(i!==S.idx){ S.idx=i; onPhase(p, ph[i+1]); }
+
+  orb.style.transform = "translate(-50%,-50%) scale("+scaleFor(p.type,prog).toFixed(4)+")";
+  ringFg.style.strokeDashoffset = RING_C*(1-prog);
+  beatNum.textContent = Math.max(1,Math.ceil(p.end-b));
+  playhead.style.left = (b/S.sess.total*100).toFixed(3)+"%";
+
+  const d=Math.floor(b);
+  if(d!==lastDot && b>=0){
+    lastDot=d;
+    beatDot.classList.add("hit");
+    setTimeout(()=>beatDot.classList.remove("hit"),90);
+  }
+}
+const ease = t => .5-.5*Math.cos(Math.PI*Math.min(1,Math.max(0,t)));
+function scaleFor(type,p){
+  switch(type){
+    case "inhale": case "prep":   return .44+.56*ease(p);
+    case "exhale": case "release":return 1-.56*ease(p);
+    case "puff":   return p<.3 ? .88-.42*ease(p/.3) : .46+.42*ease((p-.3)/.7);
+    case "countin":return .44+.05*Math.sin(p*Math.PI*8);
+    default:       return .5+.035*Math.sin(p*Math.PI*4);
+  }
+}
+function onPhase(p,next){
+  const m=META[p.type], A=ACCENTS[m.accent];
+  document.documentElement.style.setProperty("--accent",A.a);
+  document.documentElement.style.setProperty("--accent-d",A.d);
+  stage.style.setProperty("--glow",A.glow);
+
+  cueText.textContent=m.label;
+  cueSub.textContent=p.cue||"";
+  const st=stepById(p.stepId);
+  stNum.textContent = S.mode==="full"
+    ? "STEP "+st.num+" / 04"
+    : "STEP "+st.num;
+  stName.textContent=st.name;
+  setText.textContent = p.sets ? "SET "+p.set+" / "+p.sets
+                      : (p.type==="countin" ? "READY" : "INTERVAL");
+  nextHint.textContent = next ? "NEXT — "+META[next.type].label+" / "+next.beats+"拍" : "NEXT — 終了";
+
+  paintRestCard(p);
+}
+
+/* 休憩中は次に何をするかを軽く出しておく */
+function paintRestCard(p){
+  const resty = (p.type==="countin"||p.type==="interval"||p.type==="rest");
+  restCard.hidden = !resty;
+  stage.classList.toggle("resting", resty);
+  if(!resty) return;
+  const st=stepById(p.stepId), sameStep = (p.type==="rest");
+  restKick.textContent = p.type==="countin" ? "STARTING — STEP "+st.num
+                       : sameStep           ? "NEXT — SET "+p.set+" / "+p.sets
+                       :                      "NEXT STEP "+st.num;
+  restName.textContent = st.full||st.name;
+  restDesc.textContent = st.guide.act;
+  restPat.textContent  = st.pattern+" ／ "+st.sets+" セット";
+}
+
+function togglePause(){
+  if(!S.running) return;
+  if(!S.paused){
+    S.paused=true;
+    S.pausedBeat=(audio().currentTime-S.t0)/S.beatDur;
+    clearInterval(S.sched); cancelAnimationFrame(S.raf);
+    stPause.textContent="再開する";
+    cueText.textContent="一時停止";
+  }else{
+    S.paused=false;
+    S.t0=audio().currentTime-S.pausedBeat*S.beatDur;
+    S.nextBeat=Math.ceil(S.pausedBeat);
+    S.sched=setInterval(scheduler,25);
+    S.raf=requestAnimationFrame(frame);
+    stPause.textContent="一時停止";
+    S.idx=-1;
+  }
+}
+function stopSession(){
+  S.running=false; S.paused=false;
+  releaseAwake();
+  clearInterval(S.sched); cancelAnimationFrame(S.raf);
+  stage.hidden=true;
+  stage.classList.remove("resting");
+  bgmResume();
+}
+function finish(){
+  stopSession();
+  const {s,kind}=recordSession();
+  const sup = s.dailyCount>=2;
+  fadeTo(0,10);                       // 完了音とBGMが重ならないように
+  chime(sup);
+  setTimeout(bgmResume, 1900);
+  paintStreak();
+
+  bigFlame.classList.toggle("super", sup);
+  doneBadge.hidden = !sup;
+  doneStreak.textContent=s.streak;
+  dsDays.textContent=s.streak; dsBest.textContent=s.best; dsTotal.textContent=s.total;
+
+  if(kind==="super"){
+    doneTitle.textContent="1日2回、やり切りました";
+    doneMsg.textContent="炎が青く変わりました。今日はもう十分です。";
+  }else if(kind==="extra"){
+    doneTitle.textContent="本日 3回目以降の1本";
+    doneMsg.textContent="記録は2回で満点なので数字は動きません。息だけ持ち帰ってください。";
+  }else{
+    doneTitle.textContent = s.streak>1 ? s.streak+"日、続いています" : "今日の息、記録しました";
+    doneMsg.textContent="今日もう1回やり切ると、炎が青くなります（スーパーストリーク）。";
+  }
+  showTip();
+  done.hidden=false;
+}
+
+/* =========================================================
+   6.5 開始前ブリーフィング
+   ========================================================= */
+const BRIEF_KEY="rmt.skipbrief.v1";
+const skipBrief = ()=>{ try{return localStorage.getItem(BRIEF_KEY)==="1";}catch(e){return false;} };
+const setSkipBrief = v =>{ try{localStorage.setItem(BRIEF_KEY, v?"1":"0");}catch(e){} };
+
+let pending=null;
+function requestStart(ids,mode){
+  pending={ids,mode};
+  if(skipBrief()){ launch(); return; }
+  renderBrief(ids,mode);
+  briefChk.checked=false;
+  brief.hidden=false;
+  brief.scrollTop=0;
+}
+function launch(){
+  if(!pending) return;
+  const p=pending; pending=null;
+  brief.hidden=true;
+  startSession(p.ids,p.mode);
+}
+function renderBrief(ids,mode){
+  const sess=buildSession(ids);
+  const full = mode==="full";
+  briefTitle.textContent = full ? "4ステップを、通しで。" : stepById(ids[0]).name;
+  briefLead.textContent = full
+    ? "Step 1 から 4 まで止まりません。ステップの間には8拍の休憩が入ります。"
+    : "このステップだけを単体で行います。終えれば今日の記録として1日ぶんが灯ります。";
+  briefSteps.innerHTML = ids.map(id=>{
+    const st=stepById(id), g=st.guide;
+    return `<div class="bstep">
+      <div class="bn">${st.num}</div>
+      <div>
+        <h4>${st.full||st.name}</h4>
+        <p class="how"><span class="tag">準備</span>${g.set}</p>
+        <p class="how"><span class="tag act">動作</span>${g.act}</p>
+        ${full ? "" : `<p class="how why">${g.why}</p>`}
+        <p class="pat">${st.pattern} ／ ${st.sets} セット</p>
+      </div>
+    </div>`;
+  }).join("");
+  briefTime.textContent=fmtTime(sess.total*60/S.bpm);
+  briefBpm.textContent=S.bpm;
+  briefBeats.textContent=sess.total;
+}
+
+/* =========================================================
+   6.6 TIPS
+   ========================================================= */
+const TIPS=[
+ "息のスピードを上げることでマウスピース内の圧力が下がり、リードが効率よく振動して太い音が出ます。",
+ "胸式呼吸で肩が上がると首周りの筋肉が無駄なエネルギーを消費し、音の豊かな響きを妨げてしまいます。",
+ "ビッグバンドの合奏後半で音が埋もれない秘訣は、肺の大きさよりも一定に息を吐き続ける筋持久力です。",
+ "長時間の演奏でアンブシュアがバテるのを防ぐには、口元ではなく体幹の圧力で息を支えることが重要です。",
+ "息を吐く時間を長くすることで副交感神経が優位になり、ソロ直前の極度の緊張を和らげることができます。",
+ "良い姿勢で喉を自然に開き、自分自身の身体全体を共鳴箱のように使うことで音の倍音が豊かになります。",
+ "吸気筋を鍛えることで、アップテンポな曲中のわずか0.5秒のブレスでも十分な空気を確保できるようになります。",
+ "息を吐き切る前に次の息を吸おうとすると肺に古い空気が残り、逆に息苦しさの原因になってしまいます。",
+ "オープニングの広いマウスピースを力まずに吹きこなすには、噛む力ではなく息の圧力とスピードのバランスがカギです。",
+ "横隔膜は直接意識して動かせる筋肉ではないため、周囲の腹筋や背筋の動きを通じて間接的にコントロールします。",
+ "練習前に数分間だけ呼吸筋トレーニングを行うことで、その後の演奏における肺活量のパフォーマンスが一時的に向上します。",
+ "仰向けに寝て呼吸すると内臓の重みが自然な負荷となり、正しい横隔膜の動きを身体で実感しやすくなります。",
+ "息を吸う際はお腹を膨らませるだけでなく、背中や脇腹まで360度広がるようなイメージを持つと肺を最大限に使えます。",
+ "毎日の呼吸筋トレーニングは、たまに長時間やるよりも、1日10分でも毎日継続する方が筋肉への定着率が高まります。",
+ "楽器を構えた状態でも首の後ろを長く保つことを意識すると、気道が自然に開いて息の通り道がスムーズになります。",
+ "お腹から鋭く短い息を吐くトレーニングは、フォルテッシモでのアタックの明確さや迫力に直結します。",
+ "肺活量のピークは一般的に20代と言われていますが、それを動かす呼吸筋は何歳からでも鍛えることが可能です。",
+ "息の支えを意識しすぎると腹筋が固まって逆効果になるため、トランポリンのような柔軟な反発力をイメージしてください。",
+ "ジャズ特有のサブトーンは、少ない息の量でも喉をしっかり開いて温かい空気を楽器に送り込むことで深みが出ます。",
+ "楽器を持たずに呼吸だけに集中する時間は、自分の身体の力みや無意識の癖に気づくための最も効率的な近道です。"
+];
+let lastTip=-1;
+function showTip(){
+  let i;
+  do{ i=Math.floor(Math.random()*TIPS.length); }while(TIPS.length>1 && i===lastTip);
+  lastTip=i;
+  tipNo.textContent="TIP "+String(i+1).padStart(2,"0");
+  tipTxt.textContent=TIPS[i];
+}
+
+/* =========================================================
+   0. BGM 設定
+   ---------------------------------------------------------
+   音源は index.html と同じフォルダに置いてください。
+   別の場所やURLに変える場合は BGM_URL を書き換えるだけです。
+
+   BGM: "I Can't Get Started" by Coleman Hawkins
+   Source: Internet Archive  /  License: CC BY-NC-ND 4.0
+   ========================================================= */
+const BGM_URL   = "I_Can_t_Get_Started.mp3";
+const BGM_TITLE = "I Can't Get Started / Coleman Hawkins";
+const BGM_VOL   = 0.28;        // 通常時の音量（0〜1）
+const BGM_KEY   = "rmt.bgm.v1";
+
+const bgm = new Audio();
+bgm.loop = true; bgm.preload = "auto"; bgm.volume = 0;
+if(BGM_URL) bgm.src = BGM_URL;
+let bgmOn = true, bgmOk = !!BGM_URL, entered = false, fadeTimer = null;
+try{ bgmOn = localStorage.getItem(BGM_KEY) !== "0"; }catch(e){}
+bgm.addEventListener("error",()=>{ bgmOk=false; paintBgmBtn(); });
+
+function fadeTo(target, ms){
+  clearInterval(fadeTimer);
+  const from = bgm.volume, steps = Math.max(1, Math.round(ms/50));
+  let i = 0;
+  fadeTimer = setInterval(()=>{
+    i++;
+    bgm.volume = Math.min(1, Math.max(0, from + (target-from)*i/steps));
+    if(i>=steps){ clearInterval(fadeTimer); if(target===0) bgm.pause(); }
+  },50);
+}
+function bgmPlay(){                     // ユーザー操作きっかけでのみ呼ぶ
+  if(!bgmOk || !bgmOn) return;
+  const p = bgm.play();
+  if(p && p.catch) p.catch(()=>{});     // 自動再生がブロックされても無視
+  fadeTo(BGM_VOL, 1600);
+}
+function bgmDuck(){ if(bgmOk && !bgm.paused) fadeTo(0, 900); }           // トレーニング中は消す
+function bgmResume(){ if(entered && bgmOn && bgmOk) bgmPlay(); }
+function paintBgmBtn(){
+  bgmBtn.hidden = !bgmOk;
+  bgmBtn.title = bgmOn ? "BGM ON — "+BGM_TITLE : "BGM OFF";
+  bgmBtn.style.opacity = bgmOn ? "" : ".38";
+}
+
+/* =========================================================
+   0.5 利用規約ゲート ＆ 起動時のストリーク画面
+   ========================================================= */
+const TERMS_KEY = "rmt.terms.v1";
+const hasAcceptedTerms = ()=>{ try{ return localStorage.getItem(TERMS_KEY)==="1"; }catch(e){ return false; } };
+
+/* 今月のカレンダー（起動画面とストリーク詳細で共用） */
+function monthCal(){
+  const now=new Date(), y=now.getFullYear(), m=now.getMonth(), t=dayKey();
+  const lead=new Date(y,m,1).getDay(), len=new Date(y,m+1,0).getDate();
+  const s=loadStreak(), done=new Set(s.days||[]), sup=new Set(s.supers||[]);
+  const todayD=now.getDate();
+  let cells="";
+  for(let i=0;i<lead;i++) cells+='<span class="pad"></span>';
+  for(let d=1;d<=len;d++){
+    const key=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const cls=[
+      sup.has(key)?"sup":done.has(key)?"on":"",
+      key===t?"today":"",
+      d>todayD?"future":""
+    ].filter(Boolean).join(" ");
+    cells+=`<span class="${cls}">${d}</span>`;
+  }
+  const head=["日","月","火","水","木","金","土"].map(w=>`<span>${w}</span>`).join("");
+  return `<p class="mcal-title mono">${y}.${String(m+1).padStart(2,"0")}</p>
+          <div class="mcal-h">${head}</div>
+          <div class="mcal">${cells}</div>`;
+}
+
+function paintSplash(){
+  const s=loadStreak(), n=liveStreak(s), sup=s.dailyCount>=2;
+  spNum.textContent=n; spDays.textContent=n;
+  spFlame.classList.toggle("cold", s.dailyCount===0);
+  spFlame.classList.toggle("super", sup);
+  splash.classList.toggle("is-super", sup);
+  spKick.textContent = sup ? "Super streak" : "Current streak";
+  spState.textContent = sup ? "本日2回達成 — 炎が青く燃えています"
+                      : s.dailyCount===1 ? "本日1回完了 — もう1回で青い炎"
+                      : n>0 ? "今日はまだ — ここで途切れます"
+                      : "今日から積み上げましょう";
+  spCal.innerHTML = monthCal();
+  spSub.textContent = bgmOk ? "TAP ANYWHERE — ♪ "+BGM_TITLE : "TAP ANYWHERE";
+}
+function enterApp(){
+  splash.hidden=true;
+  entered=true;
+  audio();          // AudioContext をこのタップで解除
+  bgmPlay();
+  paintStreak();
+}
+function boot(){
+  paintSplash();
+  if(!hasAcceptedTerms()){ terms.hidden=false; }
+  else { splash.hidden=false; }
+}
+
+/* =========================================================
+   7. ホーム画面
+   ========================================================= */
+function renderSteps(){
+  stepList.innerHTML="";
+  STEPS.forEach(st=>{
+    const phases=st.build();
+    const beats=phases.reduce((n,p)=>n+p.beats,0);
+    const card=document.createElement("article");
+    card.className="step";
+    card.innerHTML=`
+      <div class="step-top">
+        <div class="step-num">${st.num}</div>
+        <div class="step-name">
+          <h3>${st.name}</h3>
+          <p>${st.en}</p>
+        </div>
+        <div class="step-act">
+          <button class="ghost" data-help="${st.id}" title="やり方">?</button>
+          <button class="play" data-run="${st.id}">開始</button>
+        </div>
+      </div>
+      <div class="score mini"></div>
+      <div class="step-meta">
+        <span>${st.pattern}</span>
+        <span>${st.sets} セット・所要 <b data-dur="${beats}">${fmtTime(beats*60/S.bpm)}</b></span>
+      </div>`;
+    renderScore(card.querySelector(".score"), phases);
+    stepList.appendChild(card);
+  });
+}
+function refreshTimes(){
+  bpmRead.textContent=S.bpm;
+  const sess=buildSession([1,2,3,4]);
+  sessTime.textContent=fmtTime(sess.total*60/S.bpm);
+  sessBeats.textContent="／ "+sess.total+" 拍・4 ステップ";
+  document.querySelectorAll("[data-dur]").forEach(el=>{
+    el.textContent=fmtTime(+el.dataset.dur*60/S.bpm);
+  });
+  document.querySelectorAll("#presets .chip").forEach(c=>c.classList.toggle("on",+c.dataset.bpm===S.bpm));
+}
+
+/* =========================================================
+   8. モーダル
+   ========================================================= */
+function openSheet(html){
+  sheet.innerHTML='<div class="grab"></div>'+html+'<button class="close" data-close>閉じる</button>';
+  modal.hidden=false;
+}
+function closeSheet(){ modal.hidden=true; }
+
+function infoSheet(){
+  const s=loadStreak();
+  openSheet(`
+    <p class="kicker">About this app</p>
+    <h2>息を、拍で設計する</h2>
+    <h3>使い方</h3>
+    <p class="quote">BPMを設定し、円の動きと音に合わせて呼吸をコントロールしてください。時間がない日はBPMを上げることで時短トレーニングが可能です。</p>
+    <h3>メニュー</h3>
+    <ul>
+      ${STEPS.map(st=>`<li><em>${st.num}</em><span><b>${st.name}</b><br>${st.pattern} ／ ${st.sets}セット</span></li>`).join("")}
+    </ul>
+    <h3>継続の記録</h3>
+    <p>1日1回目の完了で連続日数が+1されます。同じ日に2回目をやり切ると日数は据え置きのまま<b style="color:#8FE3FF">スーパーストリーク</b>となり、炎が青く燃えてキラキラが舞います（3回目以降は記録が変わりません）。1日空くとリセット。記録は端末内(localStorage)にだけ保存されます。</p>
+    <h3>開始前の説明</h3>
+    <p>いまは開始前の説明を<b>${skipBrief()?"表示しない":"表示する"}</b>設定です。
+      <button data-brieftoggle style="color:var(--brass);border-bottom:1px solid var(--brass-d)">${skipBrief()?"表示に戻す":"表示しない"}</button></p>
+    <h3>クレジット</h3>
+    <p class="credit">BGM: "I Can't Get Started" by Coleman Hawkins<br>
+Source: <a href="https://archive.org/details/i-cant-get-started" target="_blank">Internet Archive</a><br>
+License: <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></p>
+    <h3>学術的背景</h3>
+    <p class="note">※このメニューは、管楽器奏者のための呼吸筋トレーニング(RMT)に関する学術論文の知見を参考に構成されています。体調に不安がある場合や、めまい・痛みを感じた場合はすぐに中止してください。</p>
+  `);
+}
+function howtoSheet(id){
+  const st=stepById(id), g=st.guide;
+  openSheet(`
+    <p class="kicker">Step ${st.num} — How to</p>
+    <h2>${st.full||st.name}</h2>
+    <div class="how-block">
+      <p class="how-lbl mono">01 — 準備</p><p>${g.set}</p>
+    </div>
+    <div class="how-block key">
+      <p class="how-lbl mono">02 — 動作</p><p>${g.act}</p>
+    </div>
+    <div class="how-block">
+      <p class="how-lbl mono">03 — ねらい</p><p>${g.why}</p>
+    </div>
+    <h3>構成</h3>
+    <ul>
+      <li><em>PATTERN</em><span>${st.pattern}</span></li>
+      <li><em>SETS</em><span>${st.sets} セット</span></li>
+      <li><em>TIME</em><span>${fmtTime(st.build().reduce((n,p)=>n+p.beats,0)*60/S.bpm)}（BPM ${S.bpm}）</span></li>
+    </ul>
+  `);
+}
+function streakSheet(){
+  const s=loadStreak(), n=liveStreak(s), today=s.dailyCount;
+  openSheet(`
+    <p class="kicker">Streak</p>
+    <h2>${n}日 続いています</h2>
+    <p>最高記録 ${s.best}日 ／ 通算 ${s.total}回</p>
+    <h3>本日</h3>
+    <p class="quote">${
+      today>=2 ? "2回完了 — <b style='color:#8FE3FF'>スーパーストリーク達成</b>。炎が青く燃えています。"
+      : today===1 ? "1回完了。もう1回やり切ると青い炎（スーパーストリーク）になります。"
+      : "まだ未実施です。"
+    }</p>
+    <h3>今月</h3>
+    <div class="sp-cal sheet-cal">${monthCal()}</div>
+    <div class="sp-legend">
+      <span><i class="c-on"></i>1回達成</span>
+      <span><i class="c-sup"></i>2回達成（スーパー）</span>
+      <span><i class="c-today"></i>今日</span>
+    </div>
+    <p class="note">連続日数は1日1回目の完了で+1。同じ日の2回目は日数を増やさず、その日を「スーパーストリーク」として記録します（3回目以降は変化しません）。1日空くと連続日数は1からやり直しです。</p>
+  `);
+}
+
+/* =========================================================
+   9. イベント
+   ========================================================= */
+infoBtn.onclick=infoSheet;
+streakBtn.onclick=streakSheet;
+modal.addEventListener("click",e=>{ if(e.target===modal||e.target.dataset.close!==undefined) closeSheet(); });
+
+startAll.onclick=()=>requestStart([1,2,3,4],"full");
+stepList.addEventListener("click",e=>{
+  const h=e.target.closest("[data-help]"), r=e.target.closest("[data-run]");
+  if(h) howtoSheet(+h.dataset.help);
+  if(r) requestStart([+r.dataset.run],"single");
+});
+
+briefStart.onclick=()=>{ if(briefChk.checked) setSkipBrief(true); launch(); };
+briefBack.onclick=()=>{ brief.hidden=true; pending=null; };
+tipMore.onclick=showTip;
+sheet.addEventListener("click",e=>{
+  if(!e.target.closest("[data-brieftoggle]")) return;
+  setSkipBrief(!skipBrief());
+  infoSheet();
+});
+
+bpmRange.addEventListener("input",e=>{ S.bpm=+e.target.value; refreshTimes(); });
+presets.addEventListener("click",e=>{
+  const c=e.target.closest(".chip"); if(!c) return;
+  S.bpm=+c.dataset.bpm; bpmRange.value=S.bpm; refreshTimes();
+});
+
+stPause.onclick=togglePause;
+stStop.onclick=stStop2.onclick=stopSession;
+stHelp.onclick=()=>{
+  if(!S.paused) togglePause();
+  const p=S.sess.phases[Math.max(0,S.idx)];
+  howtoSheet(p.stepId);
+};
+stMute.onclick=()=>{
+  muted=!muted;
+  stMute.classList.toggle("on",!muted);
+};
+doneClose.onclick=()=>{ done.hidden=true; };
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    if(!modal.hidden) closeSheet();
+    else if(!brief.hidden){ brief.hidden=true; pending=null; }
+    else if(!done.hidden) done.hidden=true;
+    else if(S.running) stopSession();
+  }
+  if(e.code==="Space" && S.running && modal.hidden){ e.preventDefault(); togglePause(); }
+});
+
+/* ---- init ---- */
+termsChk.addEventListener("change",()=>{ termsBtn.disabled = !termsChk.checked; });
+termsBtn.onclick=()=>{
+  if(!termsChk.checked) return;
+  try{ localStorage.setItem(TERMS_KEY,"1"); }catch(e){}
+  terms.hidden=true;
+  splash.hidden=false;
+};
+splash.addEventListener("click",enterApp);
+bgmBtn.onclick=()=>{
+  bgmOn=!bgmOn;
+  try{ localStorage.setItem(BGM_KEY, bgmOn?"1":"0"); }catch(e){}
+  paintBgmBtn();
+  if(bgmOn){ if(!S.running) bgmPlay(); } else { fadeTo(0,600); }
+};
+
+renderScore(sessionScore, buildSession([1,2,3,4]).phases);
+renderSteps();
+refreshTimes();
+paintStreak();
+paintBgmBtn();
+boot();
+</script>
+</body>
+</html>
