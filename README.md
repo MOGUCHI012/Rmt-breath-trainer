@@ -60,13 +60,12 @@
 .
 ├── index.html                 # アプリ本体（HTML / CSS / JS すべて）
 ├── manifest.json              # ホーム画面追加用の設定（アプリ名・アイコン）
-├── I_Can_t_Get_Started.mp3    # BGM（同じ階層に置くこと）
-├── icons/
-│   ├── apple-touch-icon.png   # iOS ホーム画面（180px）
-│   ├── icon-192.png           # Android
-│   ├── icon-512.png
-│   ├── icon-maskable-512.png  # Android の円形マスク用
-│   └── favicon-32.png         # ブラウザのタブ
+├── I_Can_t_Get_Started.mp3    # BGM
+├── apple-touch-icon.png       # iOS ホーム画面（180px）
+├── icon-192.png               # Android
+├── icon-512.png
+├── icon-maskable-512.png      # Android の円形マスク用
+├── favicon-32.png             # ブラウザのタブ
 └── README.md
 ```
 
@@ -99,6 +98,7 @@
 - 同じ日の2回目は日数を増やさず、その日を**スーパーストリーク**として記録（炎が青くなる）
 - 3回目以降は記録が変わらない
 - 1日空くと連続日数は1からやり直し
+- **1日の区切りは午前4時**（深夜1時の練習は前日ぶんとして記録されます）
 
 ---
 
