@@ -1004,7 +1004,17 @@ function renderScore(el, phases){
    4. 継続日数(Streak)
    ========================================================= */
 const KEY="rmt.streak.v1";
-const dayKey=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+
+/* 1日の区切り時刻。4 なら 4:00〜翌3:59 が「同じ1日」。
+   深夜1時の練習は前日ぶんとして記録されます。0 にすれば通常の0:00区切り。 */
+const DAY_START_HOUR = 4;
+
+/* 区切り時刻ぶん巻き戻した「アプリ上の今日」 */
+const logicalNow = (d=new Date()) => new Date(d.getTime() - DAY_START_HOUR*3600*1000);
+const dayKey = (d=new Date())=>{
+  const x=logicalNow(d);
+  return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0");
+};
 const shift=n=>{const d=new Date();d.setDate(d.getDate()+n);return dayKey(d);};
 
 const BLANK={last:null,streak:0,best:0,total:0,days:[],supers:[],countDate:null,dailyCount:0};
@@ -1062,7 +1072,7 @@ function paintStreak(){
                    : s.dailyCount===1 ? n+"日連続 — 今日は1回完了"
                    : n+"日連続 — 今日はまだ";
 }
-/* 日付をまたいでも表示が古くならないよう監視 */
+/* 4:00 の切り替わりをまたいでも表示が古くならないよう監視 */
 let watchDay=dayKey();
 setInterval(()=>{
   const d=dayKey();
@@ -1478,7 +1488,7 @@ const hasAcceptedTerms = ()=>{ try{ return localStorage.getItem(TERMS_KEY)==="1"
 
 /* 今月のカレンダー（起動画面とストリーク詳細で共用） */
 function monthCal(){
-  const now=new Date(), y=now.getFullYear(), m=now.getMonth(), t=dayKey();
+  const now=logicalNow(), y=now.getFullYear(), m=now.getMonth(), t=dayKey();
   const lead=new Date(y,m,1).getDay(), len=new Date(y,m+1,0).getDate();
   const s=loadStreak(), done=new Set(s.days||[]), sup=new Set(s.supers||[]);
   const todayD=now.getDate();
@@ -1589,7 +1599,7 @@ function infoSheet(){
       ${STEPS.map(st=>`<li><em>${st.num}</em><span><b>${st.name}</b><br>${st.pattern} ／ ${st.sets}セット</span></li>`).join("")}
     </ul>
     <h3>継続の記録</h3>
-    <p>1日1回目の完了で連続日数が+1されます。同じ日に2回目をやり切ると日数は据え置きのまま<b style="color:#8FE3FF">スーパーストリーク</b>となり、炎が青く燃えてキラキラが舞います（3回目以降は記録が変わりません）。1日空くとリセット。記録は端末内(localStorage)にだけ保存されます。</p>
+    <p>1日1回目の完了で連続日数が+1されます。同じ日に2回目をやり切ると日数は据え置きのまま<b style="color:#8FE3FF">スーパーストリーク</b>となり、炎が青く燃えてキラキラが舞います（3回目以降は記録が変わりません）。1日空くとリセット。1日の区切りは<b>午前4時</b>なので、深夜1時の練習は前日ぶんになります。記録は端末内(localStorage)にだけ保存されます。</p>
     <h3>開始前の説明</h3>
     <p>いまは開始前の説明を<b>${skipBrief()?"表示しない":"表示する"}</b>設定です。
       <button data-brieftoggle style="color:var(--brass);border-bottom:1px solid var(--brass-d)">${skipBrief()?"表示に戻す":"表示しない"}</button></p>
@@ -1642,7 +1652,7 @@ function streakSheet(){
       <span><i class="c-sup"></i>2回達成（スーパー）</span>
       <span><i class="c-today"></i>今日</span>
     </div>
-    <p class="note">連続日数は1日1回目の完了で+1。同じ日の2回目は日数を増やさず、その日を「スーパーストリーク」として記録します（3回目以降は変化しません）。1日空くと連続日数は1からやり直しです。</p>
+    <p class="note">連続日数は1日1回目の完了で+1。同じ日の2回目は日数を増やさず、その日を「スーパーストリーク」として記録します（3回目以降は変化しません）。1日空くと連続日数は1からやり直しです。1日の区切りは<b>午前4時</b>で、深夜の練習は前日ぶんとして記録されます。</p>
   `);
 }
 
