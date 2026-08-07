@@ -42,6 +42,27 @@
   --radius:   14px;
   --accent:   var(--brass);
   --accent-d: var(--brass-d);
+  --glow-top: rgba(217,168,60,.16);
+  --glow-bot: rgba(127,209,232,.10);
+}
+/* ── 朝（4:00〜14:59）：白練の紙に、くすんだ金と浅葱 ───────── */
+body.day{
+  --ink:      #F4EFE4;    /* 背景 */
+  --ink-2:    #FBF7EE;    /* モーダル等 */
+  --ink-3:    #EDE6D6;
+  --line:     rgba(60,48,28,.13);
+  --line-2:   rgba(60,48,28,.24);
+  --paper:    #2E2A22;    /* 文字（濃い墨） */
+  --paper-d:  rgba(46,42,34,.70);
+  --paper-dd: rgba(46,42,34,.46);
+  --brass:    #B07E1E;    /* くすんだ金 */
+  --brass-hi: #8A5F12;
+  --brass-d:  #E4C77A;    /* 明るい面では淡い金が“濃色”側 */
+  --air:      #2E8FA8;    /* 浅葱 */
+  --air-d:    #A9DCEA;
+  --ember:    #E0552F;
+  --glow-top: rgba(176,126,30,.18);
+  --glow-bot: rgba(46,143,168,.12);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
@@ -56,8 +77,8 @@ body{
 body::before{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
-    radial-gradient(70% 45% at 50% -8%, rgba(217,168,60,.16), transparent 70%),
-    radial-gradient(50% 40% at 12% 105%, rgba(127,209,232,.10), transparent 70%);
+    radial-gradient(70% 45% at 50% -8%, var(--glow-top), transparent 70%),
+    radial-gradient(50% 40% at 12% 105%, var(--glow-bot), transparent 70%);
 }
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 input{font:inherit;color:inherit}
@@ -76,7 +97,7 @@ input{font:inherit;color:inherit}
 .top{
   display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:22px 0 18px;position:sticky;top:0;z-index:20;
-  background:linear-gradient(var(--ink) 62%,rgba(12,15,20,0));
+  background:linear-gradient(var(--ink) 62%,transparent);
 }
 .brand{display:flex;align-items:baseline;gap:10px;min-width:0}
 .brand .mark{
@@ -91,6 +112,16 @@ input{font:inherit;color:inherit}
   color:var(--paper-d);transition:.2s;
 }
 .icon-btn:hover{color:var(--paper);border-color:var(--brass);background:rgba(217,168,60,.08)}
+/* BGM ON = 真鍮色に点灯 / OFF = 消灯して斜線 */
+#bgmBtn.on{
+  color:var(--brass);border-color:var(--brass);background:rgba(217,168,60,.14);
+  box-shadow:0 0 10px -2px rgba(217,168,60,.6);
+}
+#bgmBtn:not(.on){color:var(--paper-dd);border-color:var(--line-2);background:none;position:relative}
+#bgmBtn:not(.on)::after{
+  content:"";position:absolute;left:7px;right:7px;top:50%;height:1px;
+  background:var(--paper-dd);transform:rotate(-45deg);
+}
 
 /* ---------- streak flame ---------- */
 .streak{position:relative;width:40px;height:46px;display:block;transition:.3s}
@@ -163,6 +194,11 @@ input{font:inherit;color:inherit}
 }
 .score.mini{height:22px;padding:3px 0;border:none;gap:1.5px}
 .blk{border-radius:2px;min-width:1px}
+/* 進行バー（再生ヘッド付き）は拍数と幅を厳密に一致させるため
+   gap と min-width を排し、flexを線形分配にする */
+#stageScore{gap:0}
+#stageScore .blk{min-width:0;border-radius:0}
+#stageScore .blk + .blk{border-left:1px solid var(--ink)}
 .blk[data-c="air"]  {background:linear-gradient(180deg,var(--air),var(--air-d));height:100%}
 .blk[data-c="brass"]{background:linear-gradient(180deg,var(--brass),var(--brass-d));height:72%}
 .blk[data-c="ember"]{background:var(--ember);height:88%}
@@ -385,12 +421,12 @@ input[type=range]::-moz-range-thumb{
   box-shadow:0 0 60px -6px var(--accent);
   transition:background .5s,box-shadow .5s;will-change:transform;
 }
-.orb-txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.orb-txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#FFF}
 .cue{
   font-family:"Zen Old Mincho",serif;font-weight:700;font-size:34px;letter-spacing:.1em;
-  text-shadow:0 2px 20px rgba(0,0,0,.6);
+  color:#FFF;text-shadow:0 2px 20px rgba(0,0,0,.55),0 0 2px rgba(0,0,0,.4);
 }
-.beat-n{font-family:"IBM Plex Mono",monospace;font-size:46px;line-height:1;font-weight:500;text-shadow:0 2px 20px rgba(0,0,0,.5)}
+.beat-n{font-family:"IBM Plex Mono",monospace;font-size:46px;line-height:1;font-weight:500;color:#FFF;text-shadow:0 2px 20px rgba(0,0,0,.5),0 0 2px rgba(0,0,0,.4)}
 .cue-sub{font-size:13.5px;line-height:1.6;color:rgba(255,255,255,.86);text-shadow:0 1px 8px rgba(0,0,0,.75);max-width:88%;text-align:center;margin-top:4px}
 .setline{
   font-family:"IBM Plex Mono",monospace;font-size:14px;letter-spacing:.18em;color:var(--paper-d);
@@ -425,8 +461,8 @@ input[type=range]::-moz-range-thumb{
   font-size:13.5px;font-weight:500;color:var(--paper-d);transition:.18s;
 }
 .ctrl button:hover{border-color:var(--paper-d);color:var(--paper)}
-.ctrl button.key{background:var(--paper);border-color:var(--paper);color:#12161D;font-weight:700;flex:1.6}
-.ctrl button.key:hover{background:var(--brass-hi);border-color:var(--brass-hi)}
+.ctrl button.key{background:var(--paper);border-color:var(--paper);color:var(--ink);font-weight:700;flex:1.6}
+.ctrl button.key:hover{background:var(--brass);border-color:var(--brass);color:var(--ink)}
 
 /* pulse on beat */
 .beat-dot{
@@ -439,6 +475,10 @@ input[type=range]::-moz-range-thumb{
 .done{
   position:fixed;inset:0;z-index:70;background:rgba(8,10,14,.92);backdrop-filter:blur(14px);
   display:flex;align-items:center;justify-content:center;padding:24px;overflow-y:auto;
+  /* この画面は常に暗背景。テーマ変数に依存せず明色を固定する */
+  --paper:#EDE7DA; --paper-d:rgba(237,231,218,.72); --paper-dd:rgba(237,231,218,.5);
+  --line:rgba(237,231,218,.14); --line-2:rgba(237,231,218,.24); --brass:#D9A83C;
+  color:#EDE7DA;
 }
 .done[hidden]{display:none}
 .done-card{max-width:380px;width:100%;text-align:center;margin:auto}
@@ -448,14 +488,14 @@ input[type=range]::-moz-range-thumb{
   position:absolute;left:0;right:0;top:57%;transform:translateY(-50%);text-align:center;
   font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:44px;color:#2A1405;
 }
-.done h2{font-family:"Zen Old Mincho",serif;font-size:22px;margin:10px 0 6px;letter-spacing:.06em}
-.done p{font-size:13px;color:var(--paper-d)}
+.done h2{font-family:"Zen Old Mincho",serif;font-size:22px;margin:10px 0 6px;letter-spacing:.06em;color:#F3EEE2}
+.done p{font-size:13px;color:rgba(237,231,218,.74)}
 .done-stats{
   display:flex;gap:10px;margin:20px 0 22px;
 }
-.stat{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 4px}
-.stat b{display:block;font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:500}
-.stat s{text-decoration:none;font-size:10px;color:var(--paper-dd);letter-spacing:.08em}
+.stat{flex:1;border:1px solid rgba(237,231,218,.16);border-radius:10px;padding:10px 4px;background:rgba(237,231,218,.04)}
+.stat b{display:block;font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:500;color:#F3EEE2}
+.stat s{text-decoration:none;font-size:10px;color:rgba(237,231,218,.56);letter-spacing:.08em}
 
 /* ============ terms gate ============ */
 .gate{
@@ -511,6 +551,21 @@ input[type=range]::-moz-range-thumb{
 /* 今月のカレンダー */
 .sp-cal{margin:22px 0 10px}
 .mcal-title{font-size:11px;letter-spacing:.24em;color:var(--brass);margin-bottom:10px}
+/* 月の切り替えナビ */
+.mcal-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px}
+.mcal-nav .mcal-title{margin:0;min-width:74px;text-align:center}
+.mcal-nav button{
+  width:28px;height:28px;border-radius:8px;border:1px solid var(--line-2);
+  color:var(--paper-d);font-size:15px;line-height:1;display:grid;place-items:center;transition:.18s;
+}
+.mcal-nav button:hover:not([disabled]){border-color:var(--brass);color:var(--brass);background:rgba(217,168,60,.1)}
+.mcal-nav button[disabled]{opacity:.25;cursor:default}
+.mcal-sum{
+  font-size:12px;color:var(--paper-dd);text-align:center;margin-top:12px;
+  padding-top:10px;border-top:1px dashed var(--line);
+}
+.mcal-sum b{font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--paper);margin:0 2px}
+.mcal-sum b.sup-t{color:#5AB6E8}
 .mcal-h,.mcal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
 .mcal-h{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--paper-dd);margin-bottom:5px;letter-spacing:.04em}
 .mcal span{
@@ -605,6 +660,10 @@ input[type=range]::-moz-range-thumb{
 </style>
 </head>
 <body>
+<script>
+/* 描画前に朝/夜を確定させ、色のちらつきを防ぐ（4:00〜14:59が朝） */
+(function(){var h=new Date().getHours();if(h>=4&&h<15)document.body.classList.add("day");})();
+</script>
 
 <!-- ===== terms (初回のみ) ===== -->
 <div class="gate" id="terms" hidden>
@@ -967,6 +1026,14 @@ const ACCENTS = {
   ember:{a:"#FF6F53",d:"#8E3521",glow:"rgba(255,111,83,.18)"},
   neutral:{a:"#6E7A8C",d:"#2A323E",glow:"rgba(140,155,175,.10)"}
 };
+/* 朝は背景が明るいので、準備/用意/休憩のオーブを明るい石色に */
+const ACCENTS_DAY = {
+  air:{a:"#2E93AD",d:"#7FC8DC",glow:"rgba(46,143,168,.16)"},
+  brass:{a:"#B9851E",d:"#E3C578",glow:"rgba(176,126,30,.18)"},
+  ember:{a:"#D8481F",d:"#EE9E82",glow:"rgba(224,85,47,.18)"},
+  neutral:{a:"#79879A",d:"#AEB9C6",glow:"rgba(105,120,140,.16)"}
+};
+const accentSet = () => (typeof isDay==="function" && isDay()) ? ACCENTS_DAY : ACCENTS;
 
 /* =========================================================
    2. セッション組み立て
@@ -990,14 +1057,28 @@ const fmtTime = sec => Math.floor(sec/60)+":"+String(Math.round(sec%60)).padStar
 function renderScore(el, phases){
   el.querySelectorAll(".blk").forEach(n=>n.remove());
   const frag=document.createDocumentFragment();
+  const blks=[];
   phases.forEach(p=>{
     const d=document.createElement("div");
     d.className="blk";
     d.dataset.c=META[p.type].c;
     d.style.flex=p.beats+" 1 0";
     frag.appendChild(d);
+    blks.push(d);
   });
   el.insertBefore(frag, el.firstChild);
+  el._blks=blks;                 // 再生ヘッド計算用に実DOMを保持
+}
+/* 実際のブロック位置から拍→左端%を求める（flexの丸め誤差ごと吸収） */
+function beatToPct(beats){
+  const el=stageScore, blks=el._blks, ph=S.sess.phases;
+  if(!blks||!blks.length) return beats/S.sess.total*100;
+  const W=el.clientWidth||1;
+  let i=0;
+  while(i<ph.length-1 && beats>=ph[i].end) i++;
+  const p=ph[i], frac=Math.min(1,Math.max(0,(beats-p.start)/p.beats));
+  const bx=blks[i].offsetLeft, bw=blks[i].offsetWidth;
+  return (bx + bw*frac) / W * 100;
 }
 
 /* =========================================================
@@ -1102,7 +1183,16 @@ function tone(t,freq,dur,vol,type){
 function playCue(t,kind){
   if(muted) return;
   if(kind==="puff"){ tone(t,1760,.05,.30,"square"); return; }
-  if(kind[0]==="c"){                       // 休憩ラストの 3・2・1
+  if(kind==="half"){                       // 長い呼気の折り返し（控えめな中音）
+    tone(t,587.33,.10,.15,"sine");
+    return;
+  }
+  if(kind[0]==="x"){                       // 吐き終わりの 3・2・1（下がる）
+    const f={3:659.25,2:587.33,1:493.88}[+kind[2]];
+    tone(t,f,.13,.26,"triangle");
+    return;
+  }
+  if(kind[0]==="c"){                       // 休憩ラストの 3・2・1（上がる）
     const f={3:659.25,2:880,1:1174.66}[+kind[2]];
     tone(t,f,.11,.28,"triangle");
     return;
@@ -1165,10 +1255,17 @@ function buildCues(sess){
   const cues=new Array(sess.total).fill("beat");
   sess.phases.forEach(p=>{
     const resty = (p.type==="rest"||p.type==="interval"||p.type==="countin");
+    const longExhale = (p.type==="exhale" && p.beats>=12);   // 12拍以上の長い呼気
+    const half = p.start + Math.floor(p.beats/2);
     for(let b=p.start;b<p.end;b++){
       let k = (b===p.start) ? "start:"+p.type : "beat";
       if(p.type==="puff") k="puff";
-      if(resty){ const left=p.end-b; if(left<=3) k="cd"+left; }   // 残り3・2・1
+      if(resty){ const left=p.end-b; if(left<=3) k="cd"+left; }   // 残り3・2・1（上がる）
+      if(longExhale){
+        const left=p.end-b;
+        if(left<=3) k="xd"+left;        // 吐き終わりの3・2・1（下がる）
+        else if(b===half) k="half";     // 折り返しの合図
+      }
       cues[b]=k;
     }
   });
@@ -1223,7 +1320,7 @@ function paint(beats){
   orb.style.transform = "translate(-50%,-50%) scale("+scaleFor(p.type,prog).toFixed(4)+")";
   ringFg.style.strokeDashoffset = RING_C*(1-prog);
   beatNum.textContent = Math.max(1,Math.ceil(p.end-b));
-  playhead.style.left = (b/S.sess.total*100).toFixed(3)+"%";
+  playhead.style.left = beatToPct(b).toFixed(3)+"%";
 
   const d=Math.floor(b);
   if(d!==lastDot && b>=0){
@@ -1243,7 +1340,7 @@ function scaleFor(type,p){
   }
 }
 function onPhase(p,next){
-  const m=META[p.type], A=ACCENTS[m.accent];
+  const m=META[p.type], A=accentSet()[m.accent];
   document.documentElement.style.setProperty("--accent",A.a);
   document.documentElement.style.setProperty("--accent-d",A.d);
   stage.style.setProperty("--glow",A.glow);
@@ -1382,7 +1479,7 @@ function renderBrief(ids,mode){
    6.6 TIPS
    ========================================================= */
 const TIPS=[
- "息のスピードを上げることでマウスピース内の圧力が下がり、リードが効率よく振動して太い音が出ます。",
+ "豊かな音の土台は息の「圧力（サポート）」です。腹部から十分な圧力で息を送るとリードが安定して振動し、芯のある太い音になります。圧力が足りないと口先で補おうとして音がやせてしまいます。",
  "胸式呼吸で肩が上がると首周りの筋肉が無駄なエネルギーを消費し、音の豊かな響きを妨げてしまいます。",
  "ビッグバンドの合奏後半で音が埋もれない秘訣は、肺の大きさよりも一定に息を吐き続ける筋持久力です。",
  "長時間の演奏でアンブシュアがバテるのを防ぐには、口元ではなく体幹の圧力で息を支えることが重要です。",
@@ -1391,7 +1488,7 @@ const TIPS=[
  "吸気筋を鍛えることで、アップテンポな曲中のわずか0.5秒のブレスでも十分な空気を確保できるようになります。",
  "息を吐き切る前に次の息を吸おうとすると肺に古い空気が残り、逆に息苦しさの原因になってしまいます。",
  "オープニングの広いマウスピースを力まずに吹きこなすには、噛む力ではなく息の圧力とスピードのバランスがカギです。",
- "横隔膜は直接意識して動かせる筋肉ではないため、周囲の腹筋や背筋の動きを通じて間接的にコントロールします。",
+ "横隔膜は自分では感じ取りにくい筋肉のため、周囲の腹筋や背筋の動きを通じて間接的にコントロールします。",
  "練習前に数分間だけ呼吸筋トレーニングを行うことで、その後の演奏における肺活量のパフォーマンスが一時的に向上します。",
  "仰向けに寝て呼吸すると内臓の重みが自然な負荷となり、正しい横隔膜の動きを身体で実感しやすくなります。",
  "息を吸う際はお腹を膨らませるだけでなく、背中や脇腹まで360度広がるようなイメージを持つと肺を最大限に使えます。",
@@ -1401,7 +1498,13 @@ const TIPS=[
  "肺活量のピークは一般的に20代と言われていますが、それを動かす呼吸筋は何歳からでも鍛えることが可能です。",
  "息の支えを意識しすぎると腹筋が固まって逆効果になるため、トランポリンのような柔軟な反発力をイメージしてください。",
  "ジャズ特有のサブトーンは、少ない息の量でも喉をしっかり開いて温かい空気を楽器に送り込むことで深みが出ます。",
- "楽器を持たずに呼吸だけに集中する時間は、自分の身体の力みや無意識の癖に気づくための最も効率的な近道です。"
+ "楽器を持たずに呼吸だけに集中する時間は、自分の身体の力みや無意識の癖に気づくための最も効率的な近道です。",
+ "「鏡を曇らせるような温かい息」を意識すると喉と口腔が自然に開きます。息の温度そのものではなく、この開いた空間が響きの豊かさと深い音色を生みます。",
+ "トランペットやトロンボーンの音は唇の振動から生まれます。高音域は噛む力ではなく、唇の絞りと速い息の連携で作るのが正解で、マウスピースを強く押し付けるのは逆効果です。",
+ "金管でハイノートが苦しいときほど、マウスピースを唇に押し付けがちです。押し付ける力ではなく息のスピードで支えれば、唇が自由に振動して音が楽器に抜けていきます。",
+ "チューバやトロンボーンなど大きな金管ほど、速い息より「太くゆったりした大量の息」が要ります。ビッグバンドの低音を支えるには、まず肺いっぱいに吸える吸気の容量が土台になります。",
+ "タンギングの誤解で多いのが「舌で音を出す」こと。実際に音を鳴らすのは息で、舌はそれを区切るだけです。まず一定の息を流し、その流れの上で舌を軽く弾ませるのが澄んだアタックのコツです。",
+ "速いタンギングが続かないときは、舌を速く動かすより先に息の支えを見直してください。舌は流れる息の上をボートが水面を跳ねるように動くもので、息が止まれば舌も重くなります。"
 ];
 let lastTip=-1;
 function showTip(){
@@ -1413,25 +1516,51 @@ function showTip(){
 }
 
 /* =========================================================
-   0. BGM 設定
+   0. テーマ（朝／夜）＆ BGM 設定
    ---------------------------------------------------------
+   時間帯で自動切替：
+     朝 4:00〜14:59  … 明るい配色 ＋ 朝のBGM
+     夜 15:00〜3:59  … 暗い配色  ＋ 夜のBGM
    音源は index.html と同じフォルダに置いてください。
-   別の場所やURLに変える場合は BGM_URL を書き換えるだけです。
 
-   BGM: "I Can't Get Started" by Coleman Hawkins
-   Source: Internet Archive  /  License: CC BY-NC-ND 4.0
+   朝 BGM: "Stompin' At The Savoy" by Clifford Brown & Max Roach (1954)
+           Source: Internet Archive / License: CC0 1.0 Universal
+   夜 BGM: "I Can't Get Started" by Coleman Hawkins
+           Source: Internet Archive / License: CC BY-NC-ND 4.0
    ========================================================= */
-const BGM_URL   = "I_Can_t_Get_Started.mp3";
-const BGM_TITLE = "I Can't Get Started / Coleman Hawkins";
+const BGM_NIGHT = { url:"I_Can_t_Get_Started.mp3", title:"I Can't Get Started / Coleman Hawkins" };
+const BGM_DAY   = { url:"bgm-stompin-at-the-savoy.mp3", title:"Stompin' At The Savoy / Clifford Brown & Max Roach" };
 const BGM_VOL   = 0.28;        // 通常時の音量（0〜1）
 const BGM_KEY   = "rmt.bgm.v1";
 
+/* いま朝か夜か（アプリの4時区切りと同じ考え方で時刻判定） */
+function isDay(d=new Date()){ const h=d.getHours(); return h>=4 && h<15; }
+function themeNow(){ return isDay() ? "day" : "night"; }
+function currentBgm(){ return isDay() ? BGM_DAY : BGM_NIGHT; }
+
 const bgm = new Audio();
 bgm.loop = true; bgm.preload = "auto"; bgm.volume = 0;
-if(BGM_URL) bgm.src = BGM_URL;
-let bgmOn = true, bgmOk = !!BGM_URL, entered = false, fadeTimer = null;
+let bgmOn = true, bgmOk = false, entered = false, fadeTimer = null, bgmLoaded = "";
 try{ bgmOn = localStorage.getItem(BGM_KEY) !== "0"; }catch(e){}
 bgm.addEventListener("error",()=>{ bgmOk=false; paintBgmBtn(); });
+
+/* 時間帯に合った音源をロード（既にその曲なら何もしない） */
+function loadBgmForTime(){
+  const src = currentBgm().url;
+  bgmOk = !!src;
+  if(src && bgmLoaded!==src){ bgm.src = src; bgmLoaded = src; }
+  if(!src){ bgm.pause(); }
+}
+/* いずれかの時間帯にBGMがあるか（ボタンを出すかの判定に使う） */
+function anyBgm(){ return !!(BGM_DAY.url || BGM_NIGHT.url); }
+
+function applyTheme(){
+  const t = themeNow();
+  document.body.classList.toggle("day", t==="day");
+  const tc = getComputedStyle(document.body).getPropertyValue("--ink").trim();
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta && tc) meta.setAttribute("content", tc);
+}
 
 function fadeTo(target, ms){
   clearInterval(fadeTimer);
@@ -1444,6 +1573,7 @@ function fadeTo(target, ms){
   },50);
 }
 function bgmPlay(){                     // ユーザー操作きっかけでのみ呼ぶ
+  loadBgmForTime();
   if(!bgmOk || !bgmOn) return;
   if(document.visibilityState!=="visible") return;   // 非表示中は鳴らさない
   const p = bgm.play();
@@ -1461,9 +1591,9 @@ document.addEventListener("visibilitychange",()=>{
   if(document.visibilityState==="hidden"){
     bgmWasPlaying = !bgm.paused;
     bgmStop();
-  }else if(bgmWasPlaying){
-    bgmWasPlaying=false;
-    if(!S.running) bgmResume();          // トレーニング中は無音のまま戻す
+  }else if(document.visibilityState==="visible"){
+    applyTheme();                         // 戻ってきたら時間帯を再判定
+    if(bgmWasPlaying){ bgmWasPlaying=false; if(!S.running) bgmResume(); }
   }
 });
 function haltAll(){
@@ -1474,10 +1604,34 @@ function haltAll(){
 }
 window.addEventListener("pagehide", haltAll);
 window.addEventListener("beforeunload", haltAll);
+
+/* 開きっぱなしで朝⇄夜の境界（4時／15時）をまたいだら切り替える */
+let themeWatch = themeNow();
+setInterval(()=>{
+  const t = themeNow();
+  if(t!==themeWatch){
+    themeWatch = t;
+    applyTheme();
+    if(entered && !S.running){          // 時間帯が変わったらBGMも入れ替え
+      const wasPlaying = !bgm.paused;
+      bgmStop();
+      if(wasPlaying) bgmResume();
+    }
+    if(!splash.hidden) paintSplash();
+  }
+}, 30000);
+
 function paintBgmBtn(){
-  bgmBtn.hidden = !bgmOk;
-  bgmBtn.title = bgmOn ? "BGM ON — "+BGM_TITLE : "BGM OFF";
-  bgmBtn.style.opacity = bgmOn ? "" : ".38";
+  if(typeof S==="undefined") return;      // 初期化前のイベントは無視
+  /* 点灯は「ユーザーの設定」だけで決める。
+     再生開始は非同期なので、実際の再生状態で判定すると
+     ONにした直後に消灯して見えてしまう。 */
+  bgmBtn.hidden = !anyBgm();              // 曲が1つも無いときだけ隠す
+  bgmBtn.classList.toggle("on", bgmOn && bgmOk);
+  bgmBtn.title = !bgmOk ? "この時間帯のBGMは未設定です"
+               : bgmOn ? "BGM ON — "+currentBgm().title
+               : "BGM OFF（タップで再生）";
+  bgmBtn.style.opacity = "";
 }
 
 /* =========================================================
@@ -1487,26 +1641,48 @@ const TERMS_KEY = "rmt.terms.v1";
 const hasAcceptedTerms = ()=>{ try{ return localStorage.getItem(TERMS_KEY)==="1"; }catch(e){ return false; } };
 
 /* 今月のカレンダー（起動画面とストリーク詳細で共用） */
-function monthCal(){
-  const now=logicalNow(), y=now.getFullYear(), m=now.getMonth(), t=dayKey();
+/* 今月のカレンダー（offset=0が今月、-1で先月）。nav=trueで前後移動ボタン付き */
+function monthCal(offset, nav){
+  offset = Number(offset);
+  if(!Number.isFinite(offset)) offset = 0;   // Eventオブジェクト等が来ても安全に
+  const base=logicalNow();
+  const view=new Date(base.getFullYear(), base.getMonth()+offset, 1);
+  const y=view.getFullYear(), m=view.getMonth(), t=dayKey();
   const lead=new Date(y,m,1).getDay(), len=new Date(y,m+1,0).getDate();
   const s=loadStreak(), done=new Set(s.days||[]), sup=new Set(s.supers||[]);
-  const todayD=now.getDate();
-  let cells="";
+  const isThisMonth = (y===base.getFullYear() && m===base.getMonth());
+  const todayD=base.getDate();
+  let cells="", cntDone=0, cntSup=0;
   for(let i=0;i<lead;i++) cells+='<span class="pad"></span>';
   for(let d=1;d<=len;d++){
     const key=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    if(sup.has(key)) cntSup++; else if(done.has(key)) cntDone++;
     const cls=[
       sup.has(key)?"sup":done.has(key)?"on":"",
       key===t?"today":"",
-      d>todayD?"future":""
+      (isThisMonth && d>todayD)?"future":""
     ].filter(Boolean).join(" ");
     cells+=`<span class="${cls}">${d}</span>`;
   }
   const head=["日","月","火","水","木","金","土"].map(w=>`<span>${w}</span>`).join("");
-  return `<p class="mcal-title mono">${y}.${String(m+1).padStart(2,"0")}</p>
+  const total=cntDone+cntSup;
+  const title=`${y}.${String(m+1).padStart(2,"0")}`;
+  /* 記録開始より前や未来の月へは行かせない */
+  const first=(s.days&&s.days.length)?s.days.slice().sort()[0]:dayKey();
+  const firstD=new Date(first.slice(0,4), +first.slice(5,7)-1, 1);
+  const canPrev = new Date(y,m,1) > firstD;
+  const canNext = offset < 0;
+  const navHtml = nav ? `<div class="mcal-nav">
+      <button data-mo="${offset-1}" ${canPrev?"":"disabled"} aria-label="前の月">‹</button>
+      <p class="mcal-title mono">${title}</p>
+      <button data-mo="${offset+1}" ${canNext?"":"disabled"} aria-label="次の月">›</button>
+    </div>` : `<p class="mcal-title mono">${title}</p>`;
+  const summary = nav ? `<p class="mcal-sum">この月は <b>${total}</b> 日 実施
+      ${cntSup?`／ うち <b class="sup-t">${cntSup}</b> 日スーパー`:""}</p>` : "";
+  return `${navHtml}
           <div class="mcal-h">${head}</div>
-          <div class="mcal">${cells}</div>`;
+          <div class="mcal">${cells}</div>
+          ${summary}`;
 }
 
 function paintSplash(){
@@ -1521,7 +1697,10 @@ function paintSplash(){
                       : n>0 ? "今日はまだ — ここで途切れます"
                       : "今日から積み上げましょう";
   spCal.innerHTML = monthCal();
-  spSub.textContent = bgmOk ? "TAP ANYWHERE — ♪ "+BGM_TITLE : "TAP ANYWHERE";
+  loadBgmForTime();
+  const greet = isDay() ? "おはようございます" : "こんばんは";
+  spSub.textContent = bgmOk ? "TAP ANYWHERE — ♪ "+currentBgm().title
+                            : "TAP ANYWHERE — "+greet;
 }
 function enterApp(){
   splash.hidden=true;
@@ -1531,6 +1710,8 @@ function enterApp(){
   paintStreak();
 }
 function boot(){
+  applyTheme();
+  loadBgmForTime();
   paintSplash();
   if(!hasAcceptedTerms()){ terms.hidden=false; }
   else { splash.hidden=false; }
@@ -1607,6 +1788,9 @@ function infoSheet(){
     <p class="credit">BGM: "I Can't Get Started" by Coleman Hawkins<br>
 Source: <a href="https://archive.org/details/i-cant-get-started" target="_blank">Internet Archive</a><br>
 License: <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a></p>
+    <p class="credit">BGM: "Stompin' At The Savoy" by Clifford Brown &amp; Max Roach (1954)<br>
+Source: <a href="https://archive.org" target="_blank">Internet Archive</a><br>
+License: <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank">CC0 1.0 Universal</a></p>
     <h3>学術的背景</h3>
     <p class="note">※このメニューは、管楽器奏者のための呼吸筋トレーニング(RMT)に関する学術論文の知見を参考に構成されています。体調に不安がある場合や、めまい・痛みを感じた場合はすぐに中止してください。</p>
   `);
@@ -1633,7 +1817,9 @@ function howtoSheet(id){
     </ul>
   `);
 }
-function streakSheet(){
+function streakSheet(mo){
+  mo = Number(mo);
+  if(!Number.isFinite(mo)) mo = 0;
   const s=loadStreak(), n=liveStreak(s), today=s.dailyCount;
   openSheet(`
     <p class="kicker">Streak</p>
@@ -1645,8 +1831,8 @@ function streakSheet(){
       : today===1 ? "1回完了。もう1回やり切ると青い炎（スーパーストリーク）になります。"
       : "まだ未実施です。"
     }</p>
-    <h3>今月</h3>
-    <div class="sp-cal sheet-cal">${monthCal()}</div>
+    <h3>記録</h3>
+    <div class="sp-cal sheet-cal">${monthCal(mo, true)}</div>
     <div class="sp-legend">
       <span><i class="c-on"></i>1回達成</span>
       <span><i class="c-sup"></i>2回達成（スーパー）</span>
@@ -1660,7 +1846,7 @@ function streakSheet(){
    9. イベント
    ========================================================= */
 infoBtn.onclick=infoSheet;
-streakBtn.onclick=streakSheet;
+streakBtn.onclick=()=>streakSheet(0);
 modal.addEventListener("click",e=>{ if(e.target===modal||e.target.dataset.close!==undefined) closeSheet(); });
 
 startAll.onclick=()=>requestStart([1,2,3,4],"full");
@@ -1674,6 +1860,8 @@ briefStart.onclick=()=>{ if(briefChk.checked) setSkipBrief(true); launch(); };
 briefBack.onclick=()=>{ brief.hidden=true; pending=null; };
 tipMore.onclick=showTip;
 sheet.addEventListener("click",e=>{
+  const mo=e.target.closest("[data-mo]");
+  if(mo && !mo.disabled){ streakSheet(+mo.dataset.mo); return; }
   if(!e.target.closest("[data-brieftoggle]")) return;
   setSkipBrief(!skipBrief());
   infoSheet();
@@ -1720,16 +1908,22 @@ splash.addEventListener("click",enterApp);
 bgmBtn.onclick=()=>{
   bgmOn=!bgmOn;
   try{ localStorage.setItem(BGM_KEY, bgmOn?"1":"0"); }catch(e){}
-  paintBgmBtn();
-  if(bgmOn){ if(!S.running) bgmPlay(); } else { fadeTo(0,600); }
+  if(bgmOn){
+    /* OFF中のフェード予約を確実に打ち切ってから鳴らし直す */
+    clearInterval(fadeTimer);
+    if(!S.running) bgmPlay();
+  }else{
+    fadeTo(0,600);
+  }
+  paintBgmBtn();   // 再生開始を指示したあとに描画する
 };
 
 renderScore(sessionScore, buildSession([1,2,3,4]).phases);
 renderSteps();
 refreshTimes();
 paintStreak();
-paintBgmBtn();
-boot();
+boot();          // ← 先に音源を読み込み bgmOk を確定させる
+paintBgmBtn();   // ← その後で ♪ ボタンの表示状態を描く
 </script>
 </body>
 </html>
