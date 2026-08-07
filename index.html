@@ -640,6 +640,18 @@ input[type=range]::-moz-range-thumb{
 .sheet .credit a:hover{color:var(--brass-hi);border-color:var(--brass-hi)}
 .sheet-cal{margin:6px 0 10px;max-width:320px}
 .sheet .sp-legend{justify-content:flex-start;margin-bottom:4px}
+/* 抵抗の作り方（選択肢リスト） */
+.ways{list-style:none;margin-top:10px}
+.ways li{
+  display:flex;gap:10px;align-items:baseline;padding:7px 0;
+  border-top:1px dashed var(--line);font-size:12.5px;line-height:1.7;
+}
+.ways li b{
+  flex:none;min-width:6.5em;color:var(--brass);font-weight:700;font-size:12px;
+}
+.ways li span{color:var(--paper-d)}
+.brief-ways{margin-top:6px}
+.brief-ways li{font-size:12px;padding:6px 0}
 .sheet .close{
   width:100%;margin-top:24px;padding:13px;border-radius:10px;border:1px solid var(--line-2);
   font-size:14px;color:var(--paper-d);
@@ -958,14 +970,21 @@ const STEPS = [
     id:2, num:"02", name:"吸気筋トレーニング", en:"INSPIRATORY MUSCLE",
     sets:10, pattern:"2拍 吸う → 2拍 休む",
     guide:{
-      set:"手のひらで口を覆い、わずかな隙間だけを残します。",
-      act:"意図的に「息を吸いにくい状態（物理的な抵抗）」を作り、その状態で指定の拍数で一気に深く吸い込みます。",
-      why:"吸気筋（横隔膜や外肋間筋）に直接負荷をかけて最大吸気圧を高め、アップテンポな曲中の短いキャッチブレスでも瞬時に大量の空気を確保できるようにします。"
+      set:"「息が吸いにくい状態」を作ります。やりやすい方法をひとつ選んでください。",
+      act:"抵抗を作ったまま、指定の拍数で一気に深く吸い込みます。抵抗の強さより、素早く深く吸うことを優先してください。",
+      why:"吸気筋（横隔膜や外肋間筋）に直接負荷をかけて最大吸気圧を高め、アップテンポな曲中の短いキャッチブレスでも瞬時に大量の空気を確保できるようにします。",
+      ways:[
+        ["唇をすぼめる","口を「ウ」の形に細くして吸う。手ぶらででき、最も手軽。"],
+        ["鼻だけで吸う","口を閉じ、鼻から細く速く。楽器を構えたままでもできる。"],
+        ["歯の隙間から","歯を軽く閉じ、隙間から「スッ」と吸う。Step 1の呼気の裏返し。"],
+        ["手のひらで覆う","口を手で覆いわずかな隙間を残す。抵抗は強いが手がふさがる。"],
+        ["前屈して吸う","腰から前に倒れた姿勢で吸う。腹部が圧迫され自然な負荷になる。"]
+      ]
     },
     build(){
       const a=[];
       for(let s=1;s<=10;s++){
-        a.push(P("inhale",2,"手のひらの抵抗に逆らって",s,10));
+        a.push(P("inhale",2,"抵抗に逆らって一気に深く",s,10));
         a.push(P("release",2,"力を抜いて吐く",s,10));
       }
       return a;
@@ -1464,6 +1483,8 @@ function renderBrief(ids,mode){
       <div>
         <h4>${st.full||st.name}</h4>
         <p class="how"><span class="tag">準備</span>${g.set}</p>
+        ${g.ways ? `<ul class="ways brief-ways">${g.ways.map(w=>
+          `<li><b>${w[0]}</b><span>${w[1]}</span></li>`).join("")}</ul>` : ""}
         <p class="how"><span class="tag act">動作</span>${g.act}</p>
         ${full ? "" : `<p class="how why">${g.why}</p>`}
         <p class="pat">${st.pattern} ／ ${st.sets} セット</p>
@@ -1485,14 +1506,14 @@ const TIPS=[
  "長時間の演奏でアンブシュアがバテるのを防ぐには、口元ではなく体幹の圧力で息を支えることが重要です。",
  "息を吐く時間を長くすることで副交感神経が優位になり、ソロ直前の極度の緊張を和らげることができます。",
  "良い姿勢で喉を自然に開き、自分自身の身体全体を共鳴箱のように使うことで音の倍音が豊かになります。",
- "吸気筋を鍛えることで、アップテンポな曲中のわずか0.5秒のブレスでも十分な空気を確保できるようになります。",
+ "吸気筋を鍛えると、アップテンポな曲中のごく短いキャッチブレスでも、必要な空気を素早く確保しやすくなります。",
  "息を吐き切る前に次の息を吸おうとすると肺に古い空気が残り、逆に息苦しさの原因になってしまいます。",
  "オープニングの広いマウスピースを力まずに吹きこなすには、噛む力ではなく息の圧力とスピードのバランスがカギです。",
  "横隔膜は自分では感じ取りにくい筋肉のため、周囲の腹筋や背筋の動きを通じて間接的にコントロールします。",
- "練習前に数分間だけ呼吸筋トレーニングを行うことで、その後の演奏における肺活量のパフォーマンスが一時的に向上します。",
+ "練習前に数分間だけ呼吸筋トレーニングを行うと、呼吸筋が事前に活性化され、その後の息の持ちやコントロールが良くなると報告されています。",
  "仰向けに寝て呼吸すると内臓の重みが自然な負荷となり、正しい横隔膜の動きを身体で実感しやすくなります。",
  "息を吸う際はお腹を膨らませるだけでなく、背中や脇腹まで360度広がるようなイメージを持つと肺を最大限に使えます。",
- "毎日の呼吸筋トレーニングは、たまに長時間やるよりも、1日10分でも毎日継続する方が筋肉への定着率が高まります。",
+ "呼吸筋も他の筋肉と同じで、たまに長時間やるより、1日数分でも毎日続けるほうが力がつきやすくなります。",
  "楽器を構えた状態でも首の後ろを長く保つことを意識すると、気道が自然に開いて息の通り道がスムーズになります。",
  "お腹から鋭く短い息を吐くトレーニングは、フォルテッシモでのアタックの明確さや迫力に直結します。",
  "肺活量のピークは一般的に20代と言われていますが、それを動かす呼吸筋は何歳からでも鍛えることが可能です。",
@@ -1802,6 +1823,8 @@ function howtoSheet(id){
     <h2>${st.full||st.name}</h2>
     <div class="how-block">
       <p class="how-lbl mono">01 — 準備</p><p>${g.set}</p>
+      ${g.ways ? `<ul class="ways">${g.ways.map(w=>
+        `<li><b>${w[0]}</b><span>${w[1]}</span></li>`).join("")}</ul>` : ""}
     </div>
     <div class="how-block key">
       <p class="how-lbl mono">02 — 動作</p><p>${g.act}</p>
